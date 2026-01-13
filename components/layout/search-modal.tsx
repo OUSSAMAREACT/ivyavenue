@@ -6,10 +6,35 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { searchProducts } from "@/actions/search";
+import Link from "next/link"; // Use Link if possible, but href is fine for full reload or native a tag inside Dialog might be safer for closing? 
+// Actually, using normal <a> is fine for now, or Link with onClose.
 
 export function SearchModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
+    const [results, setResults] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(async () => {
+            if (query.length >= 2) {
+                setIsLoading(true);
+                try {
+                    const data = await searchProducts(query);
+                    setResults(data);
+                } catch (error) {
+                    console.error("Search error", error);
+                } finally {
+                    setIsLoading(false);
+                }
+            } else {
+                setResults([]);
+            }
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [query]);
 
     // Close on route change (optional, but good UX)
     // For now, we'll keep it simple.
@@ -56,8 +81,34 @@ export function SearchModal() {
                     )}
 
                     {query && (
-                        <div className="text-center py-10 text-gray-500">
-                            Searching for "{query}"...
+                        <div className="space-y-4">
+                            {isLoading ? (
+                                <div className="text-center py-10 text-gray-400">Searching...</div>
+                            ) : results.length > 0 ? (
+                                <div className="grid gap-2">
+                                    {results.map((product: any) => (
+                                        <a
+                                            key={product.id}
+                                            href={`/shop/${product.slug}`}
+                                            className="flex items-center gap-4 p-3 bg-white rounded-md hover:bg-gray-100 transition-colors group"
+                                        >
+                                            {product.images[0] && (
+                                                <div className="w-12 h-12 relative overflow-hidden rounded bg-gray-100">
+                                                    <img src={product.images[0].url} alt={product.images[0].alt || product.name} className="object-cover w-full h-full" />
+                                                </div>
+                                            )}
+                                            <div>
+                                                <h4 className="font-medium text-gray-900 group-hover:text-black">{product.name}</h4>
+                                                <p className="text-sm text-gray-500">${product.price}</p>
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-10 text-gray-500">
+                                    No results found for "{query}".
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
