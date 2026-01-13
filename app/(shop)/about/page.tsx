@@ -4,6 +4,8 @@ import prisma from "@/lib/prisma";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
     const page = await prisma.page.findUnique({
         where: { slug: "about" }
