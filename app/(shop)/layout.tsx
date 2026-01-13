@@ -1,5 +1,6 @@
 import { Footer } from "@/components/layout/footer";
 import { SearchModal } from "@/components/layout/search-modal";
+import { CartIndicator } from "@/components/layout/cart-indicator";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
@@ -30,11 +31,7 @@ export default function ShopLayout({
                     {/* Right: Icons */}
                     <div className="flex items-center gap-4">
                         <SearchModal />
-                        <Link href="/cart" className="p-2 hover:bg-gray-100 rounded-full transition-colors relative">
-                            <ShoppingBag className="w-5 h-5 text-gray-900" />
-                            {/* Cart Badge Placeholder */}
-                            <span className="absolute top-1 right-0.5 w-2 h-2 bg-black rounded-full" />
-                        </Link>
+                        <CartIndicator />
                     </div>
                 </div>
             </header>
