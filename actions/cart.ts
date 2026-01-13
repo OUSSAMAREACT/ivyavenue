@@ -2,39 +2,84 @@
 
 import prisma from "@/lib/prisma";
 import { getSession } from "./auth";
+import { CartItem } from "@/lib/store/cart";
 
-export interface CartItemInput {
-    slug: string;
-    quantity: number;
+// We use the same interface but we might need to cast or transform if DB model differs slightly
+// DB CartItem: id, cartId, productId, quantity
+// Store CartItem: id, name, price, quantity, image, slug
+
+export async function getCart() {
+    const session = await getSession();
+    if (!session) return null;
+
+    const cart = await prisma.cart.findUnique({
+        where: { userId: session.userId },
+        include: {
+            items: {
+                include: {
+                    product: {
+                        include: { images: true }
+                    }
+                }
+            }
+        }
+    });
+
+    if (!cart) return null;
+
+    // Transform to Store format
+    const items: CartItem[] = cart.items.map(item => ({
+        id: item.productId, // We use productId as the ID in the store usually, or distinct ID? 
+        // In store/cart.ts: id: string. usually product ID.
+        name: item.product.name,
+        price: Number(item.product.price),
+        quantity: item.quantity,
+        image: item.product.images[0]?.url || "",
+        slug: item.product.slug
+    }));
+
+    return items;
 }
 
-export async function syncCart(items: CartItemInput[]) {
+export async function syncCart(items: CartItem[]) {
     const session = await getSession();
     if (!session) return;
 
-    const user = await prisma.user.findUnique({
-        where: { id: session.userId },
-        include: { cart: true }
+    // Transactional update
+    await prisma.$transaction(async (tx) => {
+        // 1. Get or Create Cart
+        let cart = await tx.cart.findUnique({
+            where: { userId: session.userId }
+        });
+
+        if (!cart) {
+            cart = await tx.cart.create({
+                data: { userId: session.userId }
+            });
+        }
+
+        // 2. Clear existing items (Simple "Client Logic Wins" strategy)
+        // Alternatively we could merge, but that's complex logic. 
+        // We'll replace server cart with client cart to ensure consistency with what user sees.
+        await tx.cartItem.deleteMany({
+            where: { cartId: cart.id }
+        });
+
+        // 3. Create new items
+        if (items.length > 0) {
+            await tx.cartItem.createMany({
+                data: items.map(item => ({
+                    cartId: cart.id,
+                    productId: item.id, // Assuming item.id IS the productId from store
+                    quantity: item.quantity
+                }))
+            });
+        }
+
+        // Update timestamp
+        await tx.cart.update({
+            where: { id: cart.id },
+            data: { updatedAt: new Date() }
+        });
     });
-
-    // Logic: This is a simplified "overwrite" strategy.
-    // 1. Clear existing DB cart items? Or Merge?
-    // Use Case: User adds items on mobile (guest), then logs in. Mobile items should be pushed to DB.
-    // Use Case: User has items in DB, logs in on Desktop. Desktop should display DB items.
-
-    // Decision: Client is source of truth during "Active Session". 
-    // But initially, DB is source of truth.
-
-    // Handling "Sync" is complex. 
-    // Simpler MVP: 
-    // - If items provided: Update DB cart with these items (Overwrite).
-    // - If no items provided (onLoad): Return DB cart.
-
-    if (items.length > 0) {
-        // Upsert/Create Logic
-        // For simplicity in this non-relational cart structure (assuming JSON or relation?)
-        // Wait, schema doesn't have a Cart model yet! We need to add it.
-
-        // Let's add Cart model first.
-    }
 }
