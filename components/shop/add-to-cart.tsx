@@ -4,6 +4,7 @@ import { useCartStore } from "@/lib/store/cart";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface AddToCartProps {
     product: {

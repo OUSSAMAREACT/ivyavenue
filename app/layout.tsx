@@ -45,6 +45,7 @@ export const metadata: Metadata = {
 };
 
 import { CartSync } from "@/components/cart-sync";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -58,6 +59,7 @@ export default function RootLayout({
       >
         <CartSync />
         {children}
+        <Toaster />
       </body>
     </html>
   );
