@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  description String
+  price       Decimal
+  stock       Int         @default(0)
+  images      Image[]
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  reviews     Review[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+}
+
+model Image {
+  id        String  @id @default(cuid())
+  url       String
+  alt       String?
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?
+  name      String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  status    String      @default("PENDING") // PENDING, PAID, SHIPPED, COMPLETED, CANCELLED
+  total     Decimal
+  email     String
+  name      String
+  address   String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal
+}
+
+model StoreSettings {
+  id                    String  @id @default("default")
+  // Marketing
+  mailchimpApiKey       String?
+  mailchimpAudienceId   String?
+  mailchimpServerPrefix String?
+  
+  // Payments (Stripe)
+  stripePublishableKey  String?
+  stripeSecretKey       String?
+  
+  // Integrations (WhatsApp)
+  whatsappPhoneNumber   String?
+  whatsappApiKey        String?
+  
+  // Email (Resend)
+  resendApiKey          String?
+}
+
+model Page {
+  id             String   @id @default(cuid())
+  slug           String   @unique // e.g., "about", "journal"
+  title          String
+  content        String   // Markdown or HTML
+  isPublished    Boolean  @default(false)
+  
+  // SEO Fields
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
