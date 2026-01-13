@@ -13,6 +13,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ivyavenue.fluxstudio.cloud"),
   title: {
     default: "Ivy Avenue | Refined Faux Florals",
     template: "%s | Ivy Avenue",
