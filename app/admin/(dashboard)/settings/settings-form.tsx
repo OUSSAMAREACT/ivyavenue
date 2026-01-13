@@ -42,6 +42,11 @@ export default function SettingsForm({ initialSettings }: { initialSettings: any
                         <label className="block text-sm font-medium text-gray-700 mb-1">Secret Key</label>
                         <Input name="stripeSecretKey" type="password" defaultValue={initialSettings?.stripeSecretKey || ""} placeholder="sk_test_..." />
                     </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Webhook Secret</label>
+                        <Input name="stripeWebhookSecret" type="password" defaultValue={initialSettings?.stripeWebhookSecret || ""} placeholder="whsec_..." />
+                        <p className="text-xs text-gray-500 mt-1">Found in Stripe Dashboard {">"} Developers {">"} Webhooks (after adding endpoint).</p>
+                    </div>
                 </div>
             </div>
 

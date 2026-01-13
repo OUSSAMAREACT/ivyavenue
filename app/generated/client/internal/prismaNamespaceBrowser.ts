@@ -153,6 +153,7 @@ export const StoreSettingsScalarFieldEnum = {
   mailchimpServerPrefix: 'mailchimpServerPrefix',
   stripePublishableKey: 'stripePublishableKey',
   stripeSecretKey: 'stripeSecretKey',
+  stripeWebhookSecret: 'stripeWebhookSecret',
   whatsappPhoneNumber: 'whatsappPhoneNumber',
   whatsappApiKey: 'whatsappApiKey',
   resendApiKey: 'resendApiKey'

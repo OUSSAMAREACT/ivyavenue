@@ -81,6 +81,7 @@ model StoreSettings {
   // Payments (Stripe)
   stripePublishableKey  String?
   stripeSecretKey       String?
+  stripeWebhookSecret   String?
   
   // Integrations (WhatsApp)
   whatsappPhoneNumber   String?

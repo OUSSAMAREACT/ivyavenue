@@ -31,6 +31,7 @@ export type StoreSettingsMinAggregateOutputType = {
   mailchimpServerPrefix: string | null
   stripePublishableKey: string | null
   stripeSecretKey: string | null
+  stripeWebhookSecret: string | null
   whatsappPhoneNumber: string | null
   whatsappApiKey: string | null
   resendApiKey: string | null
@@ -43,6 +44,7 @@ export type StoreSettingsMaxAggregateOutputType = {
   mailchimpServerPrefix: string | null
   stripePublishableKey: string | null
   stripeSecretKey: string | null
+  stripeWebhookSecret: string | null
   whatsappPhoneNumber: string | null
   whatsappApiKey: string | null
   resendApiKey: string | null
@@ -55,6 +57,7 @@ export type StoreSettingsCountAggregateOutputType = {
   mailchimpServerPrefix: number
   stripePublishableKey: number
   stripeSecretKey: number
+  stripeWebhookSecret: number
   whatsappPhoneNumber: number
   whatsappApiKey: number
   resendApiKey: number
@@ -69,6 +72,7 @@ export type StoreSettingsMinAggregateInputType = {
   mailchimpServerPrefix?: true
   stripePublishableKey?: true
   stripeSecretKey?: true
+  stripeWebhookSecret?: true
   whatsappPhoneNumber?: true
   whatsappApiKey?: true
   resendApiKey?: true
@@ -81,6 +85,7 @@ export type StoreSettingsMaxAggregateInputType = {
   mailchimpServerPrefix?: true
   stripePublishableKey?: true
   stripeSecretKey?: true
+  stripeWebhookSecret?: true
   whatsappPhoneNumber?: true
   whatsappApiKey?: true
   resendApiKey?: true
@@ -93,6 +98,7 @@ export type StoreSettingsCountAggregateInputType = {
   mailchimpServerPrefix?: true
   stripePublishableKey?: true
   stripeSecretKey?: true
+  stripeWebhookSecret?: true
   whatsappPhoneNumber?: true
   whatsappApiKey?: true
   resendApiKey?: true
@@ -178,6 +184,7 @@ export type StoreSettingsGroupByOutputType = {
   mailchimpServerPrefix: string | null
   stripePublishableKey: string | null
   stripeSecretKey: string | null
+  stripeWebhookSecret: string | null
   whatsappPhoneNumber: string | null
   whatsappApiKey: string | null
   resendApiKey: string | null
@@ -211,6 +218,7 @@ export type StoreSettingsWhereInput = {
   mailchimpServerPrefix?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   stripePublishableKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   stripeSecretKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
+  stripeWebhookSecret?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   whatsappPhoneNumber?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   whatsappApiKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   resendApiKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
@@ -223,6 +231,7 @@ export type StoreSettingsOrderByWithRelationInput = {
   mailchimpServerPrefix?: Prisma.SortOrderInput | Prisma.SortOrder
   stripePublishableKey?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSecretKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeWebhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappPhoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
   resendApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -238,6 +247,7 @@ export type StoreSettingsWhereUniqueInput = Prisma.AtLeast<{
   mailchimpServerPrefix?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   stripePublishableKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   stripeSecretKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
+  stripeWebhookSecret?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   whatsappPhoneNumber?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   whatsappApiKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
   resendApiKey?: Prisma.StringNullableFilter<"StoreSettings"> | string | null
@@ -250,6 +260,7 @@ export type StoreSettingsOrderByWithAggregationInput = {
   mailchimpServerPrefix?: Prisma.SortOrderInput | Prisma.SortOrder
   stripePublishableKey?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSecretKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeWebhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappPhoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
   resendApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -268,6 +279,7 @@ export type StoreSettingsScalarWhereWithAggregatesInput = {
   mailchimpServerPrefix?: Prisma.StringNullableWithAggregatesFilter<"StoreSettings"> | string | null
   stripePublishableKey?: Prisma.StringNullableWithAggregatesFilter<"StoreSettings"> | string | null
   stripeSecretKey?: Prisma.StringNullableWithAggregatesFilter<"StoreSettings"> | string | null
+  stripeWebhookSecret?: Prisma.StringNullableWithAggregatesFilter<"StoreSettings"> | string | null
   whatsappPhoneNumber?: Prisma.StringNullableWithAggregatesFilter<"StoreSettings"> | string | null
   whatsappApiKey?: Prisma.StringNullableWithAggregatesFilter<"StoreSettings"> | string | null
   resendApiKey?: Prisma.StringNullableWithAggregatesFilter<"StoreSettings"> | string | null
@@ -280,6 +292,7 @@ export type StoreSettingsCreateInput = {
   mailchimpServerPrefix?: string | null
   stripePublishableKey?: string | null
   stripeSecretKey?: string | null
+  stripeWebhookSecret?: string | null
   whatsappPhoneNumber?: string | null
   whatsappApiKey?: string | null
   resendApiKey?: string | null
@@ -292,6 +305,7 @@ export type StoreSettingsUncheckedCreateInput = {
   mailchimpServerPrefix?: string | null
   stripePublishableKey?: string | null
   stripeSecretKey?: string | null
+  stripeWebhookSecret?: string | null
   whatsappPhoneNumber?: string | null
   whatsappApiKey?: string | null
   resendApiKey?: string | null
@@ -304,6 +318,7 @@ export type StoreSettingsUpdateInput = {
   mailchimpServerPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePublishableKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSecretKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resendApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -316,6 +331,7 @@ export type StoreSettingsUncheckedUpdateInput = {
   mailchimpServerPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePublishableKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSecretKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resendApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -328,6 +344,7 @@ export type StoreSettingsCreateManyInput = {
   mailchimpServerPrefix?: string | null
   stripePublishableKey?: string | null
   stripeSecretKey?: string | null
+  stripeWebhookSecret?: string | null
   whatsappPhoneNumber?: string | null
   whatsappApiKey?: string | null
   resendApiKey?: string | null
@@ -340,6 +357,7 @@ export type StoreSettingsUpdateManyMutationInput = {
   mailchimpServerPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePublishableKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSecretKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resendApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -352,6 +370,7 @@ export type StoreSettingsUncheckedUpdateManyInput = {
   mailchimpServerPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePublishableKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSecretKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resendApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -364,6 +383,7 @@ export type StoreSettingsCountOrderByAggregateInput = {
   mailchimpServerPrefix?: Prisma.SortOrder
   stripePublishableKey?: Prisma.SortOrder
   stripeSecretKey?: Prisma.SortOrder
+  stripeWebhookSecret?: Prisma.SortOrder
   whatsappPhoneNumber?: Prisma.SortOrder
   whatsappApiKey?: Prisma.SortOrder
   resendApiKey?: Prisma.SortOrder
@@ -376,6 +396,7 @@ export type StoreSettingsMaxOrderByAggregateInput = {
   mailchimpServerPrefix?: Prisma.SortOrder
   stripePublishableKey?: Prisma.SortOrder
   stripeSecretKey?: Prisma.SortOrder
+  stripeWebhookSecret?: Prisma.SortOrder
   whatsappPhoneNumber?: Prisma.SortOrder
   whatsappApiKey?: Prisma.SortOrder
   resendApiKey?: Prisma.SortOrder
@@ -388,6 +409,7 @@ export type StoreSettingsMinOrderByAggregateInput = {
   mailchimpServerPrefix?: Prisma.SortOrder
   stripePublishableKey?: Prisma.SortOrder
   stripeSecretKey?: Prisma.SortOrder
+  stripeWebhookSecret?: Prisma.SortOrder
   whatsappPhoneNumber?: Prisma.SortOrder
   whatsappApiKey?: Prisma.SortOrder
   resendApiKey?: Prisma.SortOrder
@@ -402,6 +424,7 @@ export type StoreSettingsSelect<ExtArgs extends runtime.Types.Extensions.Interna
   mailchimpServerPrefix?: boolean
   stripePublishableKey?: boolean
   stripeSecretKey?: boolean
+  stripeWebhookSecret?: boolean
   whatsappPhoneNumber?: boolean
   whatsappApiKey?: boolean
   resendApiKey?: boolean
@@ -414,6 +437,7 @@ export type StoreSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   mailchimpServerPrefix?: boolean
   stripePublishableKey?: boolean
   stripeSecretKey?: boolean
+  stripeWebhookSecret?: boolean
   whatsappPhoneNumber?: boolean
   whatsappApiKey?: boolean
   resendApiKey?: boolean
@@ -426,6 +450,7 @@ export type StoreSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   mailchimpServerPrefix?: boolean
   stripePublishableKey?: boolean
   stripeSecretKey?: boolean
+  stripeWebhookSecret?: boolean
   whatsappPhoneNumber?: boolean
   whatsappApiKey?: boolean
   resendApiKey?: boolean
@@ -438,12 +463,13 @@ export type StoreSettingsSelectScalar = {
   mailchimpServerPrefix?: boolean
   stripePublishableKey?: boolean
   stripeSecretKey?: boolean
+  stripeWebhookSecret?: boolean
   whatsappPhoneNumber?: boolean
   whatsappApiKey?: boolean
   resendApiKey?: boolean
 }
 
-export type StoreSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mailchimpApiKey" | "mailchimpAudienceId" | "mailchimpServerPrefix" | "stripePublishableKey" | "stripeSecretKey" | "whatsappPhoneNumber" | "whatsappApiKey" | "resendApiKey", ExtArgs["result"]["storeSettings"]>
+export type StoreSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mailchimpApiKey" | "mailchimpAudienceId" | "mailchimpServerPrefix" | "stripePublishableKey" | "stripeSecretKey" | "stripeWebhookSecret" | "whatsappPhoneNumber" | "whatsappApiKey" | "resendApiKey", ExtArgs["result"]["storeSettings"]>
 
 export type $StoreSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "StoreSettings"
@@ -455,6 +481,7 @@ export type $StoreSettingsPayload<ExtArgs extends runtime.Types.Extensions.Inter
     mailchimpServerPrefix: string | null
     stripePublishableKey: string | null
     stripeSecretKey: string | null
+    stripeWebhookSecret: string | null
     whatsappPhoneNumber: string | null
     whatsappApiKey: string | null
     resendApiKey: string | null
@@ -887,6 +914,7 @@ export interface StoreSettingsFieldRefs {
   readonly mailchimpServerPrefix: Prisma.FieldRef<"StoreSettings", 'String'>
   readonly stripePublishableKey: Prisma.FieldRef<"StoreSettings", 'String'>
   readonly stripeSecretKey: Prisma.FieldRef<"StoreSettings", 'String'>
+  readonly stripeWebhookSecret: Prisma.FieldRef<"StoreSettings", 'String'>
   readonly whatsappPhoneNumber: Prisma.FieldRef<"StoreSettings", 'String'>
   readonly whatsappApiKey: Prisma.FieldRef<"StoreSettings", 'String'>
   readonly resendApiKey: Prisma.FieldRef<"StoreSettings", 'String'>

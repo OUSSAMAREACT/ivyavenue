@@ -3,22 +3,37 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import prisma from "@/lib/prisma";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "dummy_key_for_build", {
-    apiVersion: "2025-12-15.clover", // Updated to match installed SDK version
-    typescript: true,
-});
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
+// No top-level Stripe initialization to avoid build crashes or missing env vars.
+// We initialize it dynamically inside the handler.
 
 export async function POST(req: NextRequest) {
     const body = await req.text();
     const signature = (await headers()).get("stripe-signature") as string;
 
+    // 1. Fetch Settings from DB
+    const settings = await prisma.storeSettings.findUnique({
+        where: { id: "default" },
+    });
+
+    const apiKey = settings?.stripeSecretKey;
+    const webhookSecret = settings?.stripeWebhookSecret;
+
+    if (!apiKey || !webhookSecret) {
+        console.error("❌ Stripe Keys are missing in Store Settings.");
+        return new NextResponse("Stripe keys missing in settings", { status: 500 });
+    }
+
+    // 2. Initialize Stripe Dynamically
+    const stripe = new Stripe(apiKey, {
+        apiVersion: "2025-12-15.clover",
+        typescript: true,
+    });
+
     let event: Stripe.Event;
 
     try {
-        if (!signature || !webhookSecret) {
-            return new NextResponse("Missing signature or webhook secret", { status: 400 });
+        if (!signature) {
+            return new NextResponse("Missing Stripe signature", { status: 400 });
         }
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err: any) {
@@ -41,13 +56,22 @@ export async function POST(req: NextRequest) {
                         where: { id: orderId },
                         data: {
                             status: "PAID",
-                            // Optionally store stripe payment intent ID, customer ID etc.
                         },
                     });
+
+                    // Send Order Confirmation Email
+                    // Dynamic import to avoid circular dep issues if any, handling env logic inside lib
+                    const { sendOrderConfirmationEmail } = await import("@/lib/email");
+                    const customerEmail = session.customer_details?.email;
+                    const customerName = session.customer_details?.name || "Customer";
+                    const amountTotal = session.amount_total || 0;
+
+                    if (customerEmail) {
+                        await sendOrderConfirmationEmail(customerEmail, orderId, customerName, amountTotal);
+                    }
                 }
                 break;
 
-            // Handle other event types if needed (e.g., payment_intent.succeeded)
             default:
                 console.log(`Unhandled event type ${event.type}`);
         }

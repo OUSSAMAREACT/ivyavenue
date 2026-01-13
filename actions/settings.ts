@@ -16,10 +16,7 @@ export async function updateSettings(prevState: any, formData: FormData) {
             update: {
                 stripePublishableKey,
                 stripeSecretKey,
-                // stripeWebhookSecret is not in schema yet? Let's check or add it if needed. 
-                // Wait, I only added stripePublishableKey and stripeSecretKey in the plan.
-                // User said "no .env setup". Webhook secret is tough without it, but let's see. 
-                // I will stick to what is in schema for now: resendApiKey.
+                stripeWebhookSecret,
                 resendApiKey,
                 whatsappPhoneNumber,
             },
@@ -27,6 +24,7 @@ export async function updateSettings(prevState: any, formData: FormData) {
                 id: "default",
                 stripePublishableKey,
                 stripeSecretKey,
+                stripeWebhookSecret,
                 resendApiKey,
                 whatsappPhoneNumber,
             },
