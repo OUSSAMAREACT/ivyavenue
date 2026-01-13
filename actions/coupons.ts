@@ -62,7 +62,7 @@ export async function getCoupons() {
     });
 }
 
-export async function createCoupon(prevState: any, formData: FormData) {
+export async function createCoupon(formData: FormData) {
     const code = formData.get("code") as string;
     const discountType = formData.get("discountType") as string;
     const discountValue = formData.get("discountValue") as string;
@@ -83,7 +83,7 @@ export async function createCoupon(prevState: any, formData: FormData) {
         });
     } catch (e) {
         console.error(e);
-        return { message: "Failed to create coupon. Code might be duplicate." };
+        throw new Error("Failed to create coupon. Code might be duplicate.");
     }
 
     revalidatePath("/admin/coupons");

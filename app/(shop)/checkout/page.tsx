@@ -107,6 +107,31 @@ export default function CheckoutPage() {
     const [step, setStep] = useState<1 | 2>(1); // 1 = Details, 2 = Payment
     const [error, setError] = useState("");
 
+    // Coupon State
+    const [couponCode, setCouponCode] = useState("");
+    const [appliedDiscount, setAppliedDiscount] = useState(0);
+    const [couponMessage, setCouponMessage] = useState("");
+    const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+
+    const handleApplyCoupon = async () => {
+        setIsValidatingCoupon(true);
+        setCouponMessage("");
+        try {
+            const { validateCoupon } = await import("@/actions/coupons");
+            const res = await validateCoupon(couponCode, total);
+            if (res.isValid) {
+                setAppliedDiscount(res.discountAmount);
+                setCouponMessage(`Coupon applied! You saved $${res.discountAmount.toFixed(2)}`);
+            } else {
+                setAppliedDiscount(0);
+                setCouponMessage(`Error: ${res.error}`);
+            }
+        } catch (err) {
+            setCouponMessage("Error applying coupon.");
+        }
+        setIsValidatingCoupon(false);
+    };
+
     // Fetch Publishable Key on Mount
     useEffect(() => {
         fetch("/api/config/stripe").then(res => res.json()).then(data => {
@@ -126,7 +151,8 @@ export default function CheckoutPage() {
 
         const res = await createPaymentIntent(
             items.map(i => ({ id: i.id, quantity: i.quantity })),
-            shippingDetails
+            shippingDetails,
+            appliedDiscount > 0 ? couponCode : undefined
         );
 
         if (res.error) {
@@ -215,9 +241,44 @@ export default function CheckoutPage() {
                             </div>
                         ))}
                     </div>
+
+                    {/* Coupon Code Section */}
+                    <div className="mb-6 pt-6 border-t border-gray-200">
+                        <div className="flex gap-2">
+                            <Input
+                                placeholder="Discount Code"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value)}
+                                className="bg-white"
+                            />
+                            <Button
+                                onClick={handleApplyCoupon}
+                                disabled={!couponCode || isValidatingCoupon}
+                                className="bg-gray-900 text-white rounded-none"
+                            >
+                                Apply
+                            </Button>
+                        </div>
+                        {couponMessage && (
+                            <p className={`text-xs mt-2 ${couponMessage.startsWith("Error") ? "text-red-500" : "text-green-600"}`}>
+                                {couponMessage}
+                            </p>
+                        )}
+                    </div>
+
                     <div className="border-t pt-4 flex justify-between font-medium text-lg">
-                        <span>Total</span>
+                        <span>Subtotal</span>
                         <span>${total.toFixed(2)}</span>
+                    </div>
+                    {appliedDiscount > 0 && (
+                        <div className="flex justify-between font-medium text-sm text-green-600 mt-2">
+                            <span>Discount</span>
+                            <span>-${appliedDiscount.toFixed(2)}</span>
+                        </div>
+                    )}
+                    <div className="flex justify-between font-bold text-xl mt-4">
+                        <span>Total</span>
+                        <span>${(total - appliedDiscount).toFixed(2)}</span>
                     </div>
                 </div>
             </div>

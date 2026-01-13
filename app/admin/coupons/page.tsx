@@ -33,7 +33,7 @@ export default async function AdminCouponsPage() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                        {coupons.map((coupon) => (
+                        {coupons.map((coupon: any) => (
                             <tr key={coupon.id} className="hover:bg-gray-50/50">
                                 <td className="p-4 font-medium font-mono tracking-wide">{coupon.code}</td>
                                 <td className="p-4">
