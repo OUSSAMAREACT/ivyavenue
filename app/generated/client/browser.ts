@@ -57,3 +57,8 @@ export type StoreSettings = Prisma.StoreSettingsModel
  * 
  */
 export type Page = Prisma.PageModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
