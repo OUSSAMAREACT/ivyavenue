@@ -75,7 +75,11 @@ export async function login(prevState: any, formData: FormData) {
         // Create Session
         await createSession(user.id);
 
-        redirect("/account");
+        if (user.role === "ADMIN") {
+            redirect("/admin");
+        } else {
+            redirect("/account");
+        }
     } catch (error: any) {
         if (error.message === "NEXT_REDIRECT") throw error;
         console.error("Login Error:", error);
