@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { Button } from "./button";
+import { AddToCart } from "@/components/shop/add-to-cart";
 
 interface ProductCardProps {
     id: string;
