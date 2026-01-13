@@ -75,12 +75,21 @@ export default async function AccountPage() {
 
                                             <div className="text-right">
                                                 <p className="font-medium">${Number(order.total).toFixed(2)}</p>
-                                                <span className={`inline-block px-2 py-1 text-xs mt-1 ${order.status === 'PAID' ? 'bg-green-100 text-green-800' :
+                                                <span className={`inline-block px-2 py-1 text-xs mt-1 rounded-full ${order.status === 'PAID' ? 'bg-green-100 text-green-800' :
                                                     order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                                        'bg-gray-100 text-gray-800'
+                                                        order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-800' :
+                                                            'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {order.status}
                                                 </span>
+                                                {/* Tracking Info */}
+                                                {order.trackingNumber && (
+                                                    <div className="mt-2 text-xs text-gray-500">
+                                                        <p className="font-medium text-black">Tracking:</p>
+                                                        <p>{order.carrier}</p>
+                                                        <p className="font-mono">{order.trackingNumber}</p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 

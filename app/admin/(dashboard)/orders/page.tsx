@@ -13,8 +13,8 @@ async function OrdersTable() {
     });
 
     return (
-        <div className="bg-white border border-gray-100 shadow-sm overflow-hidden">
-            <table className="w-full text-left text-sm">
+        <div className="bg-white border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
+            <table className="w-full text-left text-sm min-w-[600px]">
                 <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
                     <tr>
                         <th className="p-4">Order ID</th>

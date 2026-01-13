@@ -1,23 +1,9 @@
 import prisma from "@/lib/prisma";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
-import { ArrowLeft, Package, User, MapPin, CreditCard, Clock } from "lucide-react";
+import { ArrowLeft, Package, User, MapPin, Truck, Clock } from "lucide-react";
 import { notFound } from "next/navigation";
-import { revalidatePath } from "next/cache";
-
-async function updateOrderStatus(formData: FormData) {
-    "use server";
-    const status = formData.get("status") as string;
-    const orderId = formData.get("orderId") as string;
-
-    await prisma.order.update({
-        where: { id: orderId },
-        data: { status }
-    });
-
-    revalidatePath(`/admin/orders/${orderId}`);
-    revalidatePath("/admin/orders");
-}
+import { OrderStatusForm, OrderTrackingForm } from "@/components/admin/order-actions";
 
 export default async function OrderDetailPage({ params }: { params: { id: string } }) {
     const { id } = await params;
@@ -58,8 +44,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
                                 <div key={item.id} className="py-4 flex justify-between items-center">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-gray-100 relative overflow-hidden">
-                                            {/* Image placeholders would go here, fetching associated product images might be better */}
-                                            {/* For now, just a grey box */}
+                                            {/* Image placeholder */}
                                         </div>
                                         <div>
                                             <div className="font-medium">{item.product.name}</div>
@@ -86,25 +71,19 @@ export default async function OrderDetailPage({ params }: { params: { id: string
                         <h2 className="font-medium text-lg mb-4 flex items-center gap-2">
                             <Clock size={18} /> Status
                         </h2>
-                        <form action={updateOrderStatus}>
-                            <input type="hidden" name="orderId" value={order.id} />
-                            <div className="space-y-4">
-                                <select
-                                    name="status"
-                                    defaultValue={order.status}
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
-                                >
-                                    <option value="PENDING">PENDING</option>
-                                    <option value="PAID">PAID</option>
-                                    <option value="SHIPPED">SHIPPED</option>
-                                    <option value="COMPLETED">COMPLETED</option>
-                                    <option value="CANCELLED">CANCELLED</option>
-                                </select>
-                                <button type="submit" className="w-full bg-black text-white py-2 font-medium hover:bg-gray-800 transition-colors">
-                                    Update Status
-                                </button>
-                            </div>
-                        </form>
+                        <OrderStatusForm orderId={order.id} currentStatus={order.status} />
+                    </div>
+
+                    {/* Tracking Card */}
+                    <div className="bg-white border border-gray-100 shadow-sm p-6">
+                        <h2 className="font-medium text-lg mb-4 flex items-center gap-2">
+                            <Truck size={18} /> Fulfillment
+                        </h2>
+                        <OrderTrackingForm
+                            orderId={order.id}
+                            carrier={order.carrier || ""}
+                            trackingNumber={order.trackingNumber || ""}
+                        />
                     </div>
 
                     {/* Customer Details */}

@@ -50,7 +50,28 @@ export default function SettingsForm({ initialSettings }: { initialSettings: any
                 </div>
             </div>
 
-            {/* Section: Email */}
+            {/* Section: Email Marketing (Mailchimp) */}
+            <div className="space-y-4">
+                <h2 className="font-medium text-lg border-b pb-2">Mailchimp Integration</h2>
+                <div className="grid gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">API Key</label>
+                        <Input name="mailchimpApiKey" type="password" defaultValue={initialSettings?.mailchimpApiKey || ""} placeholder="md-..." />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Audience ID</label>
+                        <Input name="mailchimpAudienceId" defaultValue={initialSettings?.mailchimpAudienceId || ""} placeholder="123abc456" />
+                        <p className="text-xs text-gray-500 mt-1">Found in Audience {">"} Settings {">"} Audience name and defaults.</p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Server Prefix</label>
+                        <Input name="mailchimpServerPrefix" defaultValue={initialSettings?.mailchimpServerPrefix || ""} placeholder="us1" />
+                        <p className="text-xs text-gray-500 mt-1">The `usX` part of your API key or URL.</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Section: Email (Resend) */}
             <div className="space-y-4">
                 <h2 className="font-medium text-lg border-b pb-2">Transactional Emails (Resend)</h2>
                 <div className="grid gap-4">

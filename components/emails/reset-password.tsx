@@ -9,22 +9,20 @@ import {
     Preview,
     Section,
     Text,
+    Button,
     Tailwind,
 } from '@react-email/components';
-import { formatCurrency } from '@/lib/utils';
 
-interface OrderConfirmationEmailProps {
-    orderId: string;
-    customerName: string;
-    total: number;
+interface ResetPasswordEmailProps {
+    resetLink: string;
+    userName?: string;
 }
 
-export const OrderConfirmationEmail = ({
-    orderId = '123456',
-    customerName = 'Valued Customer',
-    total = 0,
-}: OrderConfirmationEmailProps) => {
-    const previewText = `Order Confirmation #${orderId.slice(-8)}`;
+export const ResetPasswordEmail = ({
+    resetLink = 'https://ivyavenue.com/new-password?token=123',
+    userName = 'Valued Customer',
+}: ResetPasswordEmailProps) => {
+    const previewText = `Reset your Ivy Avenue password`;
 
     return (
         <Html>
@@ -37,21 +35,21 @@ export const OrderConfirmationEmail = ({
                             IVY AVENUE
                         </Heading>
                         <Text className="text-black text-[14px] leading-[24px]">
-                            Hello {customerName},
+                            Hello {userName},
                         </Text>
                         <Text className="text-black text-[14px] leading-[24px]">
-                            Thank you for your order. We have received your payment and our florists are preparing your shipment with care.
+                            Someone requested a password reset for your Ivy Avenue account. If this was you, click the button below to set a new password.
                         </Text>
-                        <Section className="bg-[#f9f9f9] p-[20px] rounded my-[20px]">
-                            <Text className="text-black text-[14px] leading-[24px] m-0 font-bold">
-                                Order #{orderId.slice(-8).toUpperCase()}
-                            </Text>
-                            <Text className="text-[#666666] text-[12px] leading-[24px] m-0 mt-[8px]">
-                                Total Paid: {formatCurrency(total / 100)}
-                            </Text>
+                        <Section className="text-center my-[32px]">
+                            <Button
+                                className="bg-[#000000] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
+                                href={resetLink}
+                            >
+                                Reset Password
+                            </Button>
                         </Section>
                         <Text className="text-black text-[14px] leading-[24px]">
-                            You will receive another notification once your order has been dispatched.
+                            If you didn't ask for this, you can safely ignore this email.
                         </Text>
                         <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
                         <Text className="text-[#666666] text-[12px] leading-[24px] text-center">
@@ -64,4 +62,4 @@ export const OrderConfirmationEmail = ({
     );
 };
 
-export default OrderConfirmationEmail;
+export default ResetPasswordEmail;

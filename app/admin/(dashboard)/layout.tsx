@@ -22,6 +22,7 @@ export default function AdminLayout({
                 <nav className="flex-1 p-6 space-y-2">
                     <NavLink href="/admin" icon={<LayoutDashboard size={20} />} label="Overview" />
                     <NavLink href="/admin/orders" icon={<Package size={20} />} label="Orders" />
+                    <NavLink href="/admin/categories" icon={<ShoppingBag size={20} />} label="Categories" />
                     <NavLink href="/admin/products" icon={<ShoppingBag size={20} />} label="Products" />
                     <NavLink href="/admin/pages" icon={<FileText size={20} />} label="Pages (CMS)" />
                     <NavLink href="/admin/settings" icon={<Settings size={20} />} label="Settings" />

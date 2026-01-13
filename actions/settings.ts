@@ -10,6 +10,10 @@ export async function updateSettings(prevState: any, formData: FormData) {
     const resendApiKey = formData.get("resendApiKey") as string;
     const whatsappPhoneNumber = formData.get("whatsappPhoneNumber") as string;
 
+    const mailchimpApiKey = formData.get("mailchimpApiKey") as string;
+    const mailchimpAudienceId = formData.get("mailchimpAudienceId") as string;
+    const mailchimpServerPrefix = formData.get("mailchimpServerPrefix") as string;
+
     try {
         await prisma.storeSettings.upsert({
             where: { id: "default" },
@@ -19,6 +23,9 @@ export async function updateSettings(prevState: any, formData: FormData) {
                 stripeWebhookSecret,
                 resendApiKey,
                 whatsappPhoneNumber,
+                mailchimpApiKey,
+                mailchimpAudienceId,
+                mailchimpServerPrefix,
             },
             create: {
                 id: "default",
@@ -27,6 +34,9 @@ export async function updateSettings(prevState: any, formData: FormData) {
                 stripeWebhookSecret,
                 resendApiKey,
                 whatsappPhoneNumber,
+                mailchimpApiKey,
+                mailchimpAudienceId,
+                mailchimpServerPrefix,
             },
         });
 

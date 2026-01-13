@@ -152,6 +152,28 @@ async function main() {
         }
     }
 
+    // Create Default Pages
+    const pages = [
+        { title: "About Us", slug: "about", content: "<h1>About Ivy Avenue</h1><p>Our story...</p>" },
+        { title: "Contact", slug: "contact", content: "<h1>Contact Us</h1><p>Get in touch...</p>" },
+        { title: "Journal", slug: "journal", content: "<h1>The Journal</h1><p>Latest news...</p>" },
+        { title: "Privacy Policy", slug: "privacy", content: "<h1>Privacy Policy</h1><p>Your privacy matters...</p>" },
+        { title: "Terms of Service", slug: "terms", content: "<h1>Terms of Service</h1><p>Our terms...</p>" },
+    ];
+
+    for (const page of pages) {
+        await prisma.page.upsert({
+            where: { slug: page.slug },
+            update: {},
+            create: {
+                title: page.title,
+                slug: page.slug,
+                content: page.content,
+                isPublished: true
+            }
+        });
+    }
+
     console.log('Seeding finished.')
 }
 

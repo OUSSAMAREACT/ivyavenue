@@ -19,10 +19,16 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         notFound();
     }
 
+    // Transform Decimal to number for serialization
+    const serializedProduct = {
+        ...product,
+        price: Number(product.price)
+    };
+
     return (
         <div>
             <h1 className="text-3xl font-serif mb-8">Edit Product</h1>
-            <ProductForm initialData={product} categories={categories} />
+            <ProductForm initialData={serializedProduct} categories={categories} />
         </div>
     );
 }

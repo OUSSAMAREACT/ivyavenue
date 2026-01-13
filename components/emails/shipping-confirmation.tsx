@@ -10,21 +10,23 @@ import {
     Section,
     Text,
     Tailwind,
+    Link,
 } from '@react-email/components';
-import { formatCurrency } from '@/lib/utils';
 
-interface OrderConfirmationEmailProps {
+interface ShippingConfirmationEmailProps {
     orderId: string;
     customerName: string;
-    total: number;
+    carrier: string;
+    trackingNumber: string;
 }
 
-export const OrderConfirmationEmail = ({
+export const ShippingConfirmationEmail = ({
     orderId = '123456',
     customerName = 'Valued Customer',
-    total = 0,
-}: OrderConfirmationEmailProps) => {
-    const previewText = `Order Confirmation #${orderId.slice(-8)}`;
+    carrier = 'DHL',
+    trackingNumber = '1234567890',
+}: ShippingConfirmationEmailProps) => {
+    const previewText = `Your order #${orderId.slice(-8)} has shipped!`;
 
     return (
         <Html>
@@ -40,18 +42,26 @@ export const OrderConfirmationEmail = ({
                             Hello {customerName},
                         </Text>
                         <Text className="text-black text-[14px] leading-[24px]">
-                            Thank you for your order. We have received your payment and our florists are preparing your shipment with care.
+                            Great news! Your order has been dispatched and is on its way to you.
                         </Text>
                         <Section className="bg-[#f9f9f9] p-[20px] rounded my-[20px]">
                             <Text className="text-black text-[14px] leading-[24px] m-0 font-bold">
                                 Order #{orderId.slice(-8).toUpperCase()}
                             </Text>
+                            <Hr className="border border-solid border-[#eee] my-[10px] mx-0 w-full" />
                             <Text className="text-[#666666] text-[12px] leading-[24px] m-0 mt-[8px]">
-                                Total Paid: {formatCurrency(total / 100)}
+                                Carrier: <span className="text-black font-medium">{carrier}</span>
+                            </Text>
+                            <Text className="text-[#666666] text-[12px] leading-[24px] m-0">
+                                Tracking Number: <span className="text-black font-medium">{trackingNumber}</span>
                             </Text>
                         </Section>
                         <Text className="text-black text-[14px] leading-[24px]">
-                            You will receive another notification once your order has been dispatched.
+                            You can track your package using the link below (if applicable) or by visiting the carrier's website.
+                        </Text>
+                        {/* Placeholder for actual tracking link logic if we had carrier URLs */}
+                        <Text className="text-black text-[14px] leading-[24px]">
+                            We hope you enjoy your stems!
                         </Text>
                         <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
                         <Text className="text-[#666666] text-[12px] leading-[24px] text-center">
@@ -64,4 +74,4 @@ export const OrderConfirmationEmail = ({
     );
 };
 
-export default OrderConfirmationEmail;
+export default ShippingConfirmationEmail;
