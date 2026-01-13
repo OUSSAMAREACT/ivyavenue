@@ -219,14 +219,21 @@ export default function CheckoutPage() {
                         </div>
                     )}
 
-                    {step === 2 && clientSecret && stripePromise && (
-                        <div className="space-y-4">
-                            <h2 className="font-medium text-xl mb-4">Payment</h2>
-                            <Elements options={{ clientSecret, appearance: { theme: 'stripe' } }} stripe={stripePromise}>
-                                <CheckoutForm clientSecret={clientSecret} onSuccess={() => { }} />
-                            </Elements>
-                            <button onClick={() => setStep(1)} className="text-sm underline text-gray-500 mt-4">Back to details</button>
-                        </div>
+                    {step === 2 && clientSecret && (
+                        stripePromise ? (
+                            <div className="space-y-4">
+                                <h2 className="font-medium text-xl mb-4">Payment</h2>
+                                <Elements options={{ clientSecret, appearance: { theme: 'stripe' } }} stripe={stripePromise}>
+                                    <CheckoutForm clientSecret={clientSecret} onSuccess={() => { }} />
+                                </Elements>
+                                <button onClick={() => setStep(1)} className="text-sm underline text-gray-500 mt-4">Back to details</button>
+                            </div>
+                        ) : (
+                            <div className="p-4 bg-red-50 text-red-600 border border-red-200">
+                                <p className="font-medium">Payment System Unavailable</p>
+                                <p className="text-sm mt-1">Stripe configuration is missing. Please contact support.</p>
+                            </div>
+                        )
                     )}
                 </div>
 

@@ -18,23 +18,25 @@ export function WishlistButton({ productId, initialIsInWishlist, className }: Wi
     const router = useRouter();
 
     const handleToggle = async (e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent navigating if inside a Link
+        e.preventDefault();
         e.stopPropagation();
 
-        // Optimistic update
-        const newState = !isInWishlist;
-        setIsInWishlist(newState);
-
         startTransition(async () => {
+            // Optimistic update
+            const preOptimisticState = isInWishlist;
+            setIsInWishlist(!preOptimisticState);
+
             try {
                 await toggleWishlist(productId);
             } catch (error) {
                 // Revert on error
-                setIsInWishlist(!newState);
-                // Maybe toast here?
-                // If unauthorized, could redirect to login?
-                // But actions usually throw errors. 
-                // Ideally we check session client side or handle error.
+                setIsInWishlist(preOptimisticState);
+
+                // If the error suggests unauthenticated (which server actions usually throw), redirect
+                // Ideally, we'd check the error message. For now, assume auth-required.
+                if (confirm("You must be logged in to save items to your wishlist. Proceed to login?")) {
+                    router.push("/login?callbackUrl=" + window.location.pathname);
+                }
             }
         });
     };
