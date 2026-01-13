@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 export async function toggleWishlist(productId: string) {
     const session = await getSession();
     if (!session) {
-        throw new Error("Unauthorized");
+        return { success: false, message: "Unauthorized" };
     }
 
     const userId = session.userId;
@@ -42,6 +42,8 @@ export async function toggleWishlist(productId: string) {
     revalidatePath("/shop");
     revalidatePath("/account/wishlist");
     revalidatePath(`/shop/${productId}`);
+
+    return { success: true };
 }
 
 export async function getWishlist() {

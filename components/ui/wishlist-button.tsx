@@ -27,16 +27,24 @@ export function WishlistButton({ productId, initialIsInWishlist, className }: Wi
             setIsInWishlist(!preOptimisticState);
 
             try {
-                await toggleWishlist(productId);
-            } catch (error) {
-                // Revert on error
-                setIsInWishlist(preOptimisticState);
+                const result = await toggleWishlist(productId);
 
-                // If the error suggests unauthenticated (which server actions usually throw), redirect
-                // Ideally, we'd check the error message. For now, assume auth-required.
-                if (confirm("You must be logged in to save items to your wishlist. Proceed to login?")) {
-                    router.push("/login?callbackUrl=" + window.location.pathname);
+                if (!result.success && result.message === "Unauthorized") {
+                    // Revert on unauth
+                    setIsInWishlist(preOptimisticState);
+
+                    if (confirm("You must be logged in to save items to your wishlist. Proceed to login?")) {
+                        router.push("/login?callbackUrl=" + window.location.pathname);
+                    }
+                } else if (!result.success) {
+                    // Revert on other errors
+                    setIsInWishlist(preOptimisticState);
+                    console.error("Wishlist error:", result.message);
                 }
+            } catch (error) {
+                // Revert on network/unexpected error
+                setIsInWishlist(preOptimisticState);
+                console.error("Wishlist unexpected error:", error);
             }
         });
     };
