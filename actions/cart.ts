@@ -28,7 +28,7 @@ export async function getCart() {
     if (!cart) return null;
 
     // Transform to Store format
-    const items: CartItem[] = cart.items.map(item => ({
+    const items: CartItem[] = cart.items.map((item: any) => ({
         id: item.productId, // We use productId as the ID in the store usually, or distinct ID? 
         // In store/cart.ts: id: string. usually product ID.
         name: item.product.name,
@@ -46,7 +46,7 @@ export async function syncCart(items: CartItem[]) {
     if (!session) return;
 
     // Transactional update
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
         // 1. Get or Create Cart
         let cart = await tx.cart.findUnique({
             where: { userId: session.userId }

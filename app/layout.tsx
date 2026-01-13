@@ -44,6 +44,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { CartSync } from "@/components/cart-sync";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -54,6 +56,7 @@ export default function RootLayout({
       <body
         className="antialiased bg-white text-black font-sans selection:bg-black selection:text-white"
       >
+        <CartSync />
         {children}
       </body>
     </html>
