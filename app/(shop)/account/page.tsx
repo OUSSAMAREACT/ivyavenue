@@ -63,7 +63,7 @@ export default async function AccountPage() {
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {user.orders.map(order => (
+                                {user.orders.map((order: any) => (
                                     <div key={order.id} className="border border-gray-100 p-6 hover:shadow-sm transition-shadow">
                                         <div className="flex flex-wrap justify-between items-start mb-4 pb-4 border-b border-gray-100">
                                             <div className="space-y-1">
@@ -74,8 +74,8 @@ export default async function AccountPage() {
                                             <div className="text-right">
                                                 <p className="font-medium">${Number(order.total).toFixed(2)}</p>
                                                 <span className={`inline-block px-2 py-1 text-xs mt-1 ${order.status === 'PAID' ? 'bg-green-100 text-green-800' :
-                                                        order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                                            'bg-gray-100 text-gray-800'
+                                                    order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                                        'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {order.status}
                                                 </span>
@@ -83,7 +83,7 @@ export default async function AccountPage() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            {order.items.map(item => (
+                                            {order.items.map((item: any) => (
                                                 <div key={item.id} className="flex justify-between text-sm text-gray-600">
                                                     <span>{item.product.name} x {item.quantity}</span>
                                                     <span>${Number(item.price).toFixed(2)}</span>
