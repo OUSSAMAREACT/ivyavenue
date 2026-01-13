@@ -45,9 +45,11 @@ async function AdminProductTable() {
                                 <td className="px-6 py-4 text-right">${Number(product.price).toFixed(2)}</td>
                                 <td className="px-6 py-4 text-right">{product.stock}</td>
                                 <td className="px-6 py-4 text-center">
-                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                        ...
-                                    </Button>
+                                    <Link href={`/admin/products/${product.id}`}>
+                                        <Button variant="outline" size="sm" className="h-8 border-gray-200">
+                                            Edit
+                                        </Button>
+                                    </Link>
                                 </td>
                             </tr>
                         ))
