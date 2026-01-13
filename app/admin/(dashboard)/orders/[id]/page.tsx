@@ -54,7 +54,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
                             <Package size={18} /> Items
                         </h2>
                         <div className="divide-y divide-gray-100">
-                            {order.items.map((item) => (
+                            {order.items.map((item: any) => (
                                 <div key={item.id} className="py-4 flex justify-between items-center">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-gray-100 relative overflow-hidden">

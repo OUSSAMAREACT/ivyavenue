@@ -29,7 +29,7 @@ async function OrdersTable() {
                     {orders.length === 0 ? (
                         <tr><td colSpan={6} className="p-8 text-center text-gray-500">No orders found.</td></tr>
                     ) : (
-                        orders.map((order) => (
+                        orders.map((order: any) => (
                             <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                                 <td className="p-4 font-mono text-xs">{order.id.slice(-8)}</td>
                                 <td className="p-4">
