@@ -3,7 +3,6 @@
 import { useCartStore } from "@/lib/store/cart";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
-import { toast } from "sonner"; // Assuming sonner or generic toast
 import { cn } from "@/lib/utils";
 
 interface AddToCartProps {
