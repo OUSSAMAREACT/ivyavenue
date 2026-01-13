@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { WishlistButton } from "@/components/ui/wishlist-button";
 import { isInWishlist } from "@/actions/wishlist";
+import { getRelatedProducts } from "@/actions/product";
+import { ProductCard } from "@/components/ui/product-card";
 
 async function ProductDetails({ slug }: { slug: string }) {
     const product = await prisma.product.findUnique({
@@ -28,6 +30,7 @@ async function ProductDetails({ slug }: { slug: string }) {
     }
 
     const inWishlist = await isInWishlist(product.id);
+    const relatedProducts = await getRelatedProducts(product.id);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
@@ -81,6 +84,25 @@ async function ProductDetails({ slug }: { slug: string }) {
                 <h2 className="text-3xl font-serif text-center mb-12">Customer Reviews</h2>
                 <div className="text-center text-gray-500 italic">No reviews yet. Be the first to review this {product.category.name.toLowerCase()}.</div>
             </div>
+
+            {/* Related Products */}
+            {relatedProducts.length > 0 && (
+                <div className="col-span-full mt-20 pt-20 border-t border-gray-100">
+                    <h2 className="text-3xl font-serif text-center mb-12">You Might Also Like</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {relatedProducts.map((p: any) => (
+                            <ProductCard
+                                key={p.id}
+                                id={p.id}
+                                name={p.name}
+                                slug={p.slug}
+                                price={Number(p.price)}
+                                image={p.images[0]?.url || ''}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
