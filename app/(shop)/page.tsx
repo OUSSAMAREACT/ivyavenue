@@ -16,7 +16,7 @@ async function Highlights() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 gap-x-8">
-      {products.map((product) => (
+      {products.map((product: any) => (
         <ProductCard
           key={product.id}
           id={product.id}
