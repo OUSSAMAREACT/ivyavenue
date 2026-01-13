@@ -45,6 +45,14 @@ export async function syncCart(items: CartItem[]) {
     const session = await getSession();
     if (!session) return;
 
+    // Verify user exists to avoid FK error
+    const user = await prisma.user.findUnique({
+        where: { id: session.userId },
+        select: { id: true }
+    });
+
+    if (!user) return; // User might have been deleted, abort sync
+
     // Transactional update
     await prisma.$transaction(async (tx: any) => {
         // 1. Get or Create Cart
