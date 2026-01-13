@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { WishlistButton } from "@/components/ui/wishlist-button";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = "force-dynamic";
+
 
 
 export default async function WishlistPage() {
