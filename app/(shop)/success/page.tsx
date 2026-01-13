@@ -1,13 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useCartStore } from "@/lib/store/cart";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function SuccessPage() {
+function SuccessContent() {
     const searchParams = useSearchParams();
     const paymentIntentClientSecret = searchParams.get("payment_intent_client_secret");
     const [status, setStatus] = useState("loading");
@@ -54,5 +54,13 @@ export default function SuccessPage() {
                 <Button className="bg-black text-white px-8 py-4 rounded-none">Continue Shopping</Button>
             </Link>
         </div>
+    );
+}
+
+export default function SuccessPage() {
+    return (
+        <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center">Loading...</div>}>
+            <SuccessContent />
+        </Suspense>
     );
 }
