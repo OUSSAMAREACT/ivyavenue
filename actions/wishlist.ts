@@ -53,7 +53,7 @@ export async function getWishlist() {
         include: { product: { include: { images: true } } }
     });
 
-    return wishlist.map(item => item.product);
+    return wishlist.map((item: any) => item.product);
 }
 
 export async function isInWishlist(productId: string) {

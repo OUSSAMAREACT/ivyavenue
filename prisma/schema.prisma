@@ -9,20 +9,21 @@ datasource db {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  slug        String      @unique
-  name        String
-  description String
-  price       Decimal
-  stock       Int         @default(0)
-  images      Image[]
-  categoryId  String
-  category    Category    @relation(fields: [categoryId], references: [id])
-  reviews     Review[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  orderItems  OrderItem[]
-  wishlistedBy Wishlist[]
+  id           String      @id @default(cuid())
+  slug         String      @unique
+  name         String
+  description  String
+  price        Decimal
+  stock        Int         @default(0)
+  images       Image[]
+  categoryId   String
+  category     Category    @relation(fields: [categoryId], references: [id])
+  reviews      Review[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orderItems   OrderItem[]
+  wishlistedBy Wishlist[] @relation("ProductInWishlist")
+  cartItems    CartItem[]
 }
 
 model Category {
@@ -80,45 +81,45 @@ model StoreSettings {
   mailchimpApiKey       String?
   mailchimpAudienceId   String?
   mailchimpServerPrefix String?
-  
+
   // Payments (Stripe)
-  stripePublishableKey  String?
-  stripeSecretKey       String?
-  stripeWebhookSecret   String?
-  
+  stripePublishableKey String?
+  stripeSecretKey      String?
+  stripeWebhookSecret  String?
+
   // Integrations (WhatsApp)
-  whatsappPhoneNumber   String?
-  whatsappApiKey        String?
-  
+  whatsappPhoneNumber String?
+  whatsappApiKey      String?
+
   // Email (Resend)
-  resendApiKey          String?
+  resendApiKey String?
 }
 
 model Page {
-  id             String   @id @default(cuid())
-  slug           String   @unique // e.g., "about", "journal"
-  title          String
-  content        String   // Markdown or HTML
-  isPublished    Boolean  @default(false)
-  
+  id          String  @id @default(cuid())
+  slug        String  @unique // e.g., "about", "journal"
+  title       String
+  content     String // Markdown or HTML
+  isPublished Boolean @default(false)
+
   // SEO Fields
   seoTitle       String?
   seoDescription String?
   seoKeywords    String?
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String     @id @default(cuid())
+  email     String     @unique
   password  String
   name      String?
   phone     String?
-  role      String   @default("CUSTOMER") // ADMIN, CUSTOMER
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      String     @default("CUSTOMER") // ADMIN, CUSTOMER
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   orders    Order[]
   cart      Cart?
   wishlist  Wishlist[]
@@ -146,7 +147,7 @@ model Wishlist {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product  @relation(name: "ProductInWishlist", fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([userId, productId])

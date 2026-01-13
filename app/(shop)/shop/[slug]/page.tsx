@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { WishlistButton } from "@/components/ui/wishlist-button";
 
 async function ProductDetails({ slug }: { slug: string }) {
     const product = await prisma.product.findUnique({
@@ -37,6 +38,15 @@ async function ProductDetails({ slug }: { slug: string }) {
                         alt={product.name}
                         priority
                     />
+                    {product && (
+                        <div className="absolute top-4 right-4 z-10">
+                            <WishlistButton
+                                productId={product.id}
+                                initialIsInWishlist={false}
+                                className="bg-white/80 backdrop-blur-sm shadow-sm"
+                            />
+                        </div>
+                    )}
                 </div>
                 {/* Thumbnails would go here */}
             </div>
@@ -75,7 +85,7 @@ async function ProductDetails({ slug }: { slug: string }) {
                 <h2 className="text-3xl font-serif text-center mb-12">Customer Reviews</h2>
                 <div className="text-center text-gray-500 italic">No reviews yet. Be the first to review this {product.category.name.toLowerCase()}.</div>
             </div>
-        </div>
+        </div >
     );
 }
 
