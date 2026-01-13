@@ -52,12 +52,26 @@ export async function POST(req: NextRequest) {
                 if (orderId) {
                     console.log(`✅ Payment successful for Order ${orderId}`);
 
-                    await prisma.order.update({
-                        where: { id: orderId },
-                        data: {
-                            status: "PAID",
-                        },
+                    // Use a transaction to ensure order status and stock updates are atomic
+                    await prisma.$transaction(async (tx) => {
+                        // 1. Update Order Status
+                        const order = await tx.order.update({
+                            where: { id: orderId },
+                            data: { status: "PAID" },
+                            include: { items: true },
+                        });
+
+                        // 2. Decrement Stock for each item
+                        for (const item of order.items) {
+                            await tx.product.update({
+                                where: { id: item.productId },
+                                data: {
+                                    stock: { decrement: item.quantity },
+                                },
+                            });
+                        }
                     });
+
 
                     // Send Order Confirmation Email
                     // Dynamic import to avoid circular dep issues if any, handling env logic inside lib
