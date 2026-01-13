@@ -9,26 +9,40 @@ import { ShopFilters } from "@/components/shop/shop-filters";
  * ProductGrid Component
  * Fetches and displays the product list.
  */
-async function ProductGrid() {
+async function ProductGrid({ searchParams }: { searchParams: { category?: string } }) {
     await connection(); // Opt-in to dynamic rendering
+
+    // Build where clause
+    const where: any = {};
+    if (searchParams.category) {
+        where.category = {
+            slug: searchParams.category
+        };
+    }
+
     const products = await prisma.product.findMany({
+        where,
         include: { images: true, category: true }
     });
 
     return (
         <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-6">
-                {products.map((product: any) => (
-                    <ProductCard
-                        key={product.id}
-                        id={product.id}
-                        name={product.name}
-                        slug={product.slug}
-                        price={Number(product.price)}
-                        image={product.images[0]?.url || '/Hero Background.webp'}
-                    />
-                ))}
-            </div>
+            {products.length === 0 ? (
+                <div className="text-center py-20 text-gray-500">No products found in this category.</div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-6">
+                    {products.map((product: any) => (
+                        <ProductCard
+                            key={product.id}
+                            id={product.id}
+                            name={product.name}
+                            slug={product.slug}
+                            price={Number(product.price)}
+                            image={product.images[0]?.url || '/Hero Background.webp'}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
@@ -44,7 +58,9 @@ export const metadata = {
     description: "Explore our range of meticulously crafted faux stems, arranged for timeless elegance.",
 };
 
-export default function ShopPage() {
+export default async function ShopPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+    const params = await searchParams; // Next.js 15+ async searchParams
+
     return (
         <div className="flex flex-col min-h-screen bg-white">
             {/* Header */}
@@ -59,7 +75,7 @@ export default function ShopPage() {
 
                 {/* Product Grid with Suspense */}
                 <Suspense fallback={<div className="flex-1 text-center py-20">Loading collection...</div>}>
-                    <ProductGrid />
+                    <ProductGrid searchParams={params} />
                 </Suspense>
             </div>
         </div>

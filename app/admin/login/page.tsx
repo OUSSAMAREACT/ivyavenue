@@ -37,8 +37,8 @@ export default function AdminLogin() {
 
                 <form action={formAction} className="space-y-6">
                     <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-2">Username</label>
-                        <Input name="username" type="text" required placeholder="admin" className="rounded-none" />
+                        <label className="text-sm font-medium text-gray-700 block mb-2">Email</label>
+                        <Input name="email" type="email" required placeholder="admin@ivyavenue.com" className="rounded-none" />
                     </div>
                     <div>
                         <label className="text-sm font-medium text-gray-700 block mb-2">Password</label>
