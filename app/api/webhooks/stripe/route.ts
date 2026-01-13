@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
                     console.log(`✅ Payment successful for Order ${orderId}`);
 
                     // Use a transaction to ensure order status and stock updates are atomic
-                    await prisma.$transaction(async (tx) => {
+                    await prisma.$transaction(async (tx: any) => {
                         // 1. Update Order Status
                         const order = await tx.order.update({
                             where: { id: orderId },
