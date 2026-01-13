@@ -2,6 +2,7 @@ import { PrismaClient } from '../app/generated/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import pg from 'pg'
 import 'dotenv/config'
+import bcrypt from 'bcryptjs'
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
 const adapter = new PrismaPg(pool)
@@ -104,6 +105,51 @@ async function main() {
                 }
             }
         })
+    }
+
+    // Create Admin User
+    const hashedPassword = await bcrypt.hash('ivy2026', 10);
+    await prisma.user.create({
+        data: {
+            email: 'admin@ivyavenue.com',
+            password: hashedPassword,
+            name: 'Ivy Admin',
+            role: 'ADMIN',
+        }
+    });
+
+    console.log('Admin user created: admin@ivyavenue.com / ivy2026');
+
+    // Add Fake Reviews
+    const stemsProducts = await prisma.product.findMany({ where: { category: { slug: 'stems' } } });
+
+    if (stemsProducts.length > 0) {
+        await prisma.review.create({
+            data: {
+                rating: 5,
+                comment: "Absolutely stunning! Looks just like the real thing.",
+                name: "Sarah M.",
+                productId: stemsProducts[0].id
+            }
+        });
+        await prisma.review.create({
+            data: {
+                rating: 4,
+                comment: "Great quality, fast shipping.",
+                name: "John D.",
+                productId: stemsProducts[0].id
+            }
+        });
+        if (stemsProducts.length > 1) {
+            await prisma.review.create({
+                data: {
+                    rating: 5,
+                    comment: "The texture is amazing. Highly recommend.",
+                    name: "Emily R.",
+                    productId: stemsProducts[1].id
+                }
+            });
+        }
     }
 
     console.log('Seeding finished.')
