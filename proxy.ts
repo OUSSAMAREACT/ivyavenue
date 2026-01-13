@@ -11,7 +11,7 @@ export default function proxy(request: NextRequest) {
         }
 
         // Check for session cookie
-        const hasSession = request.cookies.has("admin_session");
+        const hasSession = request.cookies.has("session");
 
         if (!hasSession) {
             const loginUrl = new URL("/admin/login", request.url);
