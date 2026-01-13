@@ -2,11 +2,6 @@ import prisma from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-
-import prisma from "@/lib/prisma";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 async function ProductDetails({ slug }: { slug: string }) {
