@@ -49,8 +49,10 @@ export default async function AdminCouponsPage() {
                                     {coupon.usedCount} {coupon.maxUses ? `/ ${coupon.maxUses}` : "uses"}
                                 </td>
                                 <td className="p-4 text-right">
-                                    <form className="inline-block mr-2">
-                                        {/* Ideally a client component for toggling, but form action works fine */}
+                                    <form action={toggleCoupon.bind(null, coupon.id, coupon.isActive)} className="inline-block mr-2">
+                                        <button className="text-black hover:text-gray-700 text-xs font-medium underline">
+                                            {coupon.isActive ? "Deactivate" : "Activate"}
+                                        </button>
                                     </form>
                                     <form action={deleteCoupon.bind(null, coupon.id)} className="inline-block">
                                         <button className="text-red-500 hover:text-red-700 text-xs font-medium">Delete</button>
