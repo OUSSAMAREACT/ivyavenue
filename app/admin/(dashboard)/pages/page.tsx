@@ -32,7 +32,7 @@ async function PagesTable() {
                     {pages.length === 0 ? (
                         <tr><td colSpan={4} className="p-8 text-center text-gray-500">No pages found. Create one to get started.</td></tr>
                     ) : (
-                        pages.map((page) => (
+                        pages.map((page: any) => (
                             <tr key={page.id} className="hover:bg-gray-50 transition-colors">
                                 <td className="p-4 font-medium text-lg">{page.title}</td>
                                 <td className="p-4 font-mono text-gray-500">/{page.slug}</td>
