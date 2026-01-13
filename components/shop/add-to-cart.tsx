@@ -34,9 +34,13 @@ export function AddToCart({ product, variant = "default", className }: AddToCart
             quantity: 1,
         });
 
-        // Simple feedback
-        // In a real app, use a Toast component
-        alert("Added to cart!");
+        toast.success(`Added ${product.name} to cart`, {
+            description: "View your cart to checkout.",
+            action: {
+                label: "View Cart",
+                onClick: () => window.location.href = '/cart'
+            }
+        });
     };
 
     if (variant === "quick") {
