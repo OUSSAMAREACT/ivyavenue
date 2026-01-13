@@ -8,12 +8,16 @@ import { isInWishlist } from "@/actions/wishlist";
 import { getRelatedProducts } from "@/actions/product";
 import { ProductCard } from "@/components/ui/product-card";
 import { AddToCart } from "@/components/shop/add-to-cart";
+import { ProductReviews } from "@/components/shop/product-reviews";
 
 async function ProductDetails({ slug }: { slug: string }) {
     const product = await prisma.product.findUnique({
         where: { slug },
         include: {
             images: true,
+            reviews: {
+                orderBy: { createdAt: 'desc' }
+            },
             category: {
                 include: {
                     products: {
@@ -85,9 +89,9 @@ async function ProductDetails({ slug }: { slug: string }) {
             </div>
 
             {/* Reviews Section */}
-            <div className="col-span-full mt-24 max-w-3xl mx-auto">
+            <div className="col-span-full mt-24 max-w-4xl mx-auto w-full">
                 <h2 className="text-3xl font-serif text-center mb-12">Customer Reviews</h2>
-                <div className="text-center text-gray-500 italic">No reviews yet. Be the first to review this {product.category.name.toLowerCase()}.</div>
+                <ProductReviews reviews={product.reviews} productName={product.name} />
             </div>
 
             {/* Related Products */}

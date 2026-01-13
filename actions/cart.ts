@@ -66,6 +66,16 @@ export async function syncCart(items: CartItem[]) {
             });
         }
 
+        // Validate products exist to prevent FK error
+        const validProductIds = new Set(
+            (await tx.product.findMany({
+                where: { id: { in: items.map(i => i.id) } },
+                select: { id: true }
+            })).map((p: any) => p.id)
+        );
+
+        const validItems = items.filter(item => validProductIds.has(item.id));
+
         // 2. Clear existing items (Simple "Client Logic Wins" strategy)
         // Alternatively we could merge, but that's complex logic. 
         // We'll replace server cart with client cart to ensure consistency with what user sees.
@@ -74,11 +84,11 @@ export async function syncCart(items: CartItem[]) {
         });
 
         // 3. Create new items
-        if (items.length > 0) {
+        if (validItems.length > 0) {
             await tx.cartItem.createMany({
-                data: items.map(item => ({
+                data: validItems.map(item => ({
                     cartId: cart.id,
-                    productId: item.id, // Assuming item.id IS the productId from store
+                    productId: item.id,
                     quantity: item.quantity
                 }))
             });
