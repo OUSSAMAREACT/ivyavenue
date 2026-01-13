@@ -69,60 +69,59 @@ async function ProductDetails({ slug }: { slug: string }) {
                 </div>
 
                 <div className="pt-6 border-t border-gray-100 space-y-4">
-                    <div className="pt-6 border-t border-gray-100 space-y-4">
-                        <AddToCart
-                            product={{
-                                id: product.id,
-                                name: product.name,
-                                price: Number(product.price),
-                                image: product.images[0]?.url || '',
-                                slug: product.slug
-                            }}
-                        />
-                        <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
-                            <span>Free Shipping on orders over $150</span>
-                        </div>
+                    <AddToCart
+                        product={{
+                            id: product.id,
+                            name: product.name,
+                            price: Number(product.price),
+                            image: product.images[0]?.url || '',
+                            slug: product.slug
+                        }}
+                    />
+                    <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
+                        <span>Free Shipping on orders over $150</span>
                     </div>
                 </div>
-
-                {/* Reviews Section */}
-                <div className="col-span-full mt-24 max-w-3xl mx-auto">
-                    <h2 className="text-3xl font-serif text-center mb-12">Customer Reviews</h2>
-                    <div className="text-center text-gray-500 italic">No reviews yet. Be the first to review this {product.category.name.toLowerCase()}.</div>
-                </div>
-
-                {/* Related Products */}
-                {relatedProducts.length > 0 && (
-                    <div className="col-span-full mt-20 pt-20 border-t border-gray-100">
-                        <h2 className="text-3xl font-serif text-center mb-12">You Might Also Like</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {relatedProducts.map((p: any) => (
-                                <ProductCard
-                                    key={p.id}
-                                    id={p.id}
-                                    name={p.name}
-                                    slug={p.slug}
-                                    price={Number(p.price)}
-                                    image={p.images[0]?.url || ''}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
-            );
+
+            {/* Reviews Section */}
+            <div className="col-span-full mt-24 max-w-3xl mx-auto">
+                <h2 className="text-3xl font-serif text-center mb-12">Customer Reviews</h2>
+                <div className="text-center text-gray-500 italic">No reviews yet. Be the first to review this {product.category.name.toLowerCase()}.</div>
+            </div>
+
+            {/* Related Products */}
+            {relatedProducts.length > 0 && (
+                <div className="col-span-full mt-20 pt-20 border-t border-gray-100">
+                    <h2 className="text-3xl font-serif text-center mb-12">You Might Also Like</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {relatedProducts.map((p: any) => (
+                            <ProductCard
+                                key={p.id}
+                                id={p.id}
+                                name={p.name}
+                                slug={p.slug}
+                                price={Number(p.price)}
+                                image={p.images[0]?.url || ''}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }
 
-            export default async function ProductPage({params}: {params: Promise<{ slug: string }> }) {
-    const {slug} = await params;
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
 
-            return (
-            <div className="min-h-screen bg-white">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
-                    <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center">Loading...</div>}>
-                        <ProductDetails slug={slug} />
-                    </Suspense>
-                </div>
+    return (
+        <div className="min-h-screen bg-white">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20">
+                <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center">Loading...</div>}>
+                    <ProductDetails slug={slug} />
+                </Suspense>
             </div>
-            );
+        </div>
+    );
 }
