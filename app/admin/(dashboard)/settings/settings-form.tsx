@@ -85,11 +85,31 @@ export default function SettingsForm({ initialSettings }: { initialSettings: any
 
             {/* Section: Integrations */}
             <div className="space-y-4">
-                <h2 className="font-medium text-lg border-b pb-2">WhatsApp Integration</h2>
+                <h2 className="font-medium text-lg border-b pb-2">Integrations & Analytics</h2>
                 <div className="grid gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Google Analytics ID (v4)</label>
+                        <Input name="googleAnalyticsId" defaultValue={initialSettings?.googleAnalyticsId || ""} placeholder="G-XXXXXXXXXX" />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Phone Number</label>
                         <Input name="whatsappPhoneNumber" defaultValue={initialSettings?.whatsappPhoneNumber || ""} placeholder="+1234567890" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Section: Shipping */}
+            <div className="space-y-4">
+                <h2 className="font-medium text-lg border-b pb-2">Shipping Configuration</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Standard Shipping Fee (£)</label>
+                        <Input name="shippingFee" type="number" step="0.01" defaultValue={Number(initialSettings?.shippingFee) || 0} />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Free Shipping Threshold (£)</label>
+                        <Input name="freeShippingThreshold" type="number" step="0.01" defaultValue={Number(initialSettings?.freeShippingThreshold) || 0} />
+                        <p className="text-xs text-gray-500 mt-1">Order total above this amount will have free shipping.</p>
                     </div>
                 </div>
             </div>

@@ -93,6 +93,9 @@ model StoreSettings {
   whatsappPhoneNumber   String?
   resendApiKey          String?
   stripeWebhookSecret   String?
+  googleAnalyticsId     String?
+  shippingFee           Decimal   @default(0)
+  freeShippingThreshold Decimal   @default(0)
 }
 
 model Page {

@@ -14,6 +14,10 @@ export async function updateSettings(prevState: any, formData: FormData) {
     const mailchimpAudienceId = formData.get("mailchimpAudienceId") as string;
     const mailchimpServerPrefix = formData.get("mailchimpServerPrefix") as string;
 
+    const googleAnalyticsId = formData.get("googleAnalyticsId") as string;
+    const shippingFee = Number(formData.get("shippingFee") || 0);
+    const freeShippingThreshold = Number(formData.get("freeShippingThreshold") || 0);
+
     try {
         await prisma.storeSettings.upsert({
             where: { id: "default" },
@@ -26,6 +30,9 @@ export async function updateSettings(prevState: any, formData: FormData) {
                 mailchimpApiKey,
                 mailchimpAudienceId,
                 mailchimpServerPrefix,
+                googleAnalyticsId,
+                shippingFee,
+                freeShippingThreshold,
             },
             create: {
                 id: "default",
@@ -37,6 +44,9 @@ export async function updateSettings(prevState: any, formData: FormData) {
                 mailchimpApiKey,
                 mailchimpAudienceId,
                 mailchimpServerPrefix,
+                googleAnalyticsId,
+                shippingFee,
+                freeShippingThreshold,
             },
         });
 
