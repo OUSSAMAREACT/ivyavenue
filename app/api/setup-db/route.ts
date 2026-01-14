@@ -12,6 +12,7 @@ export async function GET() {
         await prisma.image.deleteMany();
         await prisma.product.deleteMany();
         await prisma.category.deleteMany();
+        await prisma.coupon.deleteMany();
         await prisma.user.deleteMany({ where: { email: "admin@ivyavenue.com" } });
 
         // 2. Create Categories
@@ -159,6 +160,25 @@ export async function GET() {
                 }
             });
         }
+
+        // 7. Create Default Coupons
+        await prisma.coupon.create({
+            data: {
+                code: "WELCOME10",
+                discountType: "PERCENTAGE",
+                discountValue: 10,
+                isActive: true
+            }
+        });
+        await prisma.coupon.create({
+            data: {
+                code: "FLOWER20",
+                discountType: "FIXED",
+                discountValue: 20,
+                minOrderValue: 100,
+                isActive: true
+            }
+        });
 
         return NextResponse.json({
             success: true,

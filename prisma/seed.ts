@@ -23,6 +23,7 @@ async function main() {
     await prisma.product.deleteMany()
     await prisma.category.deleteMany()
     await prisma.user.deleteMany()
+    await prisma.coupon.deleteMany()
 
     // Create Categories
     const categoryStems = await prisma.category.create({
@@ -178,6 +179,25 @@ async function main() {
             }
         });
     }
+
+    // Create Default Coupons
+    await prisma.coupon.create({
+        data: {
+            code: "WELCOME10",
+            discountType: "PERCENTAGE",
+            discountValue: 10,
+            isActive: true
+        }
+    });
+    await prisma.coupon.create({
+        data: {
+            code: "FLOWER20",
+            discountType: "FIXED",
+            discountValue: 20,
+            minOrderValue: 100,
+            isActive: true
+        }
+    });
 
     console.log('Seeding finished.')
 }
