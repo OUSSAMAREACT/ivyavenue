@@ -9,7 +9,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Slider } from "@/components/ui/slider";
 import { PriceSlider } from "./price-slider";
 
-export function ShopFilters() {
+interface Category {
+    id: string;
+    name: string;
+    slug: string;
+}
+
+interface ShopFiltersProps {
+    categories: Category[];
+}
+
+export function ShopFilters({ categories }: ShopFiltersProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const router = useRouter();
@@ -51,12 +61,6 @@ export function ShopFilters() {
         { name: "Blush", hex: "#FFE4E1", slug: "blush" },
         { name: "Red", hex: "#8B0000", slug: "red" },
         { name: "Green", hex: "#2F4F4F", slug: "green" },
-    ];
-
-    const categories = [
-        { name: 'Individual Stems', slug: 'individual-stems' },
-        { name: 'Bouquets', slug: 'bouquets' },
-        { name: 'Vases', slug: 'vases' }
     ];
 
     // Simplification: Price Logic (Frontend Only mostly unless backend logic updated)

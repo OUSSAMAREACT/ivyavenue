@@ -4,10 +4,8 @@ import { PrismaClient } from '../lib/generated/client/client';
 const prisma = new PrismaClient();
 
 async function main() {
-    const products = await prisma.product.count();
-    const reviews = await prisma.review.count();
-    console.log(`Products: ${products}`);
-    console.log(`Reviews: ${reviews}`);
+    const categories = await prisma.category.findMany();
+    console.log('Categories in DB:', JSON.stringify(categories, null, 2));
 }
 
 main()

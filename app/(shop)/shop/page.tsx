@@ -88,6 +88,9 @@ export const metadata = {
 export default async function ShopPage({ searchParams }: { searchParams: Promise<{ category?: string, sort?: string, minPrice?: string, maxPrice?: string }> }) {
     const params = await searchParams; // Next.js 15+ async searchParams
 
+    // Fetch categories for filter
+    const categories = await prisma.category.findMany();
+
     return (
         <div className="flex flex-col min-h-screen bg-white">
             {/* Header */}
@@ -98,7 +101,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
             <div className="max-w-7xl mx-auto w-full px-6 md:px-12 py-12">
                 {/* Visual Filters (Desktop Horizontal + Mobile Drawer) */}
-                <ShopFilters />
+                <ShopFilters categories={categories} />
 
                 {/* Product Grid with Suspense */}
                 <Suspense fallback={<div className="flex-1 text-center py-20">Loading collection...</div>}>
