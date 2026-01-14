@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Slider } from "@/components/ui/slider";
+import { PriceSlider } from "./price-slider";
 
 export function ShopFilters() {
     const [isOpen, setIsOpen] = useState(false);
@@ -230,30 +231,19 @@ export function ShopFilters() {
                             >
                                 <div className="space-y-6">
                                     <h4 className="font-medium text-sm">Price Range</h4>
-                                    <Slider
+                                    {/* Local state for smooth slider UI */}
+                                    <PriceSlider
                                         defaultValue={[
                                             Number(searchParams.get("minPrice") || 0),
                                             Number(searchParams.get("maxPrice") || 200)
                                         ]}
-                                        max={200}
-                                        step={5}
-                                        onValueChange={(value) => {
-                                            // Optional: Local state update for smooth sliding UI if we had a dedicated state
-                                            // For now, Shadcn Slider handles visual thumb position internally.
-                                            // But the text update below needs state or we just read from URL which is slow.
-                                            // Let's rely on the internal slider UI for position, but text won't update until commit without state.
-                                        }}
-                                        onValueCommit={(value) => {
+                                        onCommit={(value) => {
                                             const params = new URLSearchParams(searchParams.toString());
                                             params.set("minPrice", value[0].toString());
                                             params.set("maxPrice", value[1].toString());
                                             router.push(`/shop?${params.toString()}`, { scroll: false });
                                         }}
                                     />
-                                    <div className="flex justify-between text-sm text-gray-500">
-                                        <span>£{searchParams.get("minPrice") || 0}</span>
-                                        <span>£{searchParams.get("maxPrice") || 200}</span>
-                                    </div>
                                     <div className="flex justify-end pt-2">
                                         <button
                                             onClick={(e) => {

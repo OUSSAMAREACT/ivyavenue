@@ -11,21 +11,33 @@ async function Highlights() {
   await connection();
   const products = await prisma.product.findMany({
     take: 3,
-    include: { images: true }
+    include: {
+      images: true,
+      reviews: {
+        select: { rating: true }
+      }
+    }
   });
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 gap-x-8">
-      {products.map((product: any) => (
-        <ProductCard
-          key={product.id}
-          id={product.id}
-          name={product.name}
-          slug={product.slug}
-          price={Number(product.price)}
-          image={product.images[0]?.url || "/Hero Background.webp"}
-        />
-      ))}
+      {products.map((product: any) => {
+        const rating = product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / (product.reviews.length || 1);
+        const reviewCount = product.reviews.length;
+
+        return (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            name={product.name}
+            slug={product.slug}
+            price={Number(product.price)}
+            image={product.images[0]?.url || "/Hero Background.webp"}
+            rating={rating}
+            reviewCount={reviewCount}
+          />
+        );
+      })}
     </div>
   );
 }

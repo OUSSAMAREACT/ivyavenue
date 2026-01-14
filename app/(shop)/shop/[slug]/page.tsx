@@ -165,6 +165,8 @@ async function ProductDetails({ slug }: { slug: string }) {
                                 slug={p.slug}
                                 price={Number(p.price)}
                                 image={p.images[0]?.url || ''}
+                            // Note: Related products fetcher might need update to return reviews if we want rating here
+                            // For now, we omit rating or need to update 'getRelatedProducts' action
                             />
                         ))}
                     </div>

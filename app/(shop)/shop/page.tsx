@@ -33,7 +33,13 @@ async function ProductGrid({ searchParams }: { searchParams: { category?: string
 
     const products = await prisma.product.findMany({
         where,
-        include: { images: true, category: true },
+        include: {
+            images: true,
+            category: true,
+            reviews: {
+                select: { rating: true }
+            }
+        },
         orderBy: searchParams.sort === 'price_asc' ? { price: 'asc' } :
             searchParams.sort === 'price_desc' ? { price: 'desc' } :
                 { createdAt: 'desc' }
@@ -45,16 +51,23 @@ async function ProductGrid({ searchParams }: { searchParams: { category?: string
                 <div className="text-center py-20 text-gray-500">No products found in this category.</div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-6">
-                    {products.map((product: any) => (
-                        <ProductCard
-                            key={product.id}
-                            id={product.id}
-                            name={product.name}
-                            slug={product.slug}
-                            price={Number(product.price)}
-                            image={product.images[0]?.url || '/Hero Background.webp'}
-                        />
-                    ))}
+                    {products.map((product: any) => {
+                        const rating = product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / (product.reviews.length || 1);
+                        const reviewCount = product.reviews.length;
+
+                        return (
+                            <ProductCard
+                                key={product.id}
+                                id={product.id}
+                                name={product.name}
+                                slug={product.slug}
+                                price={Number(product.price)}
+                                image={product.images[0]?.url || '/Hero Background.webp'}
+                                rating={rating}
+                                reviewCount={reviewCount}
+                            />
+                        );
+                    })}
                 </div>
             )}
         </div>
