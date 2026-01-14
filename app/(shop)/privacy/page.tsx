@@ -1,25 +1,50 @@
+import { Metadata } from "next";
+import prisma from "@/lib/prisma";
+import { connection } from "next/server";
+import { Suspense } from "react";
+
+export async function generateMetadata(): Promise<Metadata> {
+    const page = await prisma.page.findUnique({
+        where: { slug: "privacy" }
+    });
+
+    return {
+        title: page?.seoTitle || "Privacy Policy",
+        description: page?.seoDescription || "Our commitment to your privacy.",
+    };
+}
+
+async function PrivacyContent() {
+    await connection();
+    const page = await prisma.page.findUnique({
+        where: { slug: "privacy" }
+    });
+
+    if (!page) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p>Content not found.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="max-w-4xl mx-auto px-6 py-24">
+            <h1 className="text-4xl md:text-5xl font-serif mb-12 text-center">{page.title}</h1>
+            <div
+                className="prose prose-lg mx-auto prose-headings:font-serif prose-p:text-gray-600"
+                dangerouslySetInnerHTML={{ __html: page.content }}
+            />
+        </div>
+    );
+}
+
 export default function PrivacyPage() {
     return (
-        <div className="flex flex-col min-h-screen bg-white">
-            <div className="pt-32 pb-12 px-6 md:px-12 max-w-4xl mx-auto w-full">
-                <h1 className="text-4xl md:text-5xl font-serif mb-8">Privacy Policy</h1>
-                <div className="prose max-w-none text-gray-600 space-y-6">
-                    <p>Last updated: January 2026</p>
-                    <p>At Ivy Avenue, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information.</p>
-
-                    <h3 className="text-xl font-medium text-black mt-8">1. Information We Collect</h3>
-                    <p>We collect information you provide directly to us, such as when you create an account, make a purchase, or sign up for our newsletter. This may include your name, email address, shipping address, and payment information.</p>
-
-                    <h3 className="text-xl font-medium text-black mt-8">2. How We Use Your Information</h3>
-                    <p>We use your information to process your orders, communicate with you about your account, and improve our services. We do not sell your personal data to third parties.</p>
-
-                    <h3 className="text-xl font-medium text-black mt-8">3. Cookies</h3>
-                    <p>We use cookies to enhance your browsing experience and analyze site traffic. You can control cookie preferences through your browser settings.</p>
-
-                    <h3 className="text-xl font-medium text-black mt-8">4. Contact Us</h3>
-                    <p>If you have any questions about this Privacy Policy, please contact us at privacy@ivyavenue.com.</p>
-                </div>
-            </div>
+        <div className="min-h-screen bg-white">
+            <Suspense fallback={<div className="h-[50vh] flex items-center justify-center">Loading...</div>}>
+                <PrivacyContent />
+            </Suspense>
         </div>
     );
 }
