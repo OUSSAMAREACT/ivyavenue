@@ -40,6 +40,7 @@ function StatCard({ label, value, icon }: { label: string, value: string, icon: 
 }
 
 import { Overview } from "@/components/admin/overview";
+import { OrdersChart } from "@/components/admin/orders-chart";
 
 async function getGraphData() {
     const today = new Date();
@@ -60,52 +61,30 @@ async function getGraphData() {
         }
     });
 
-    const graph: { [key: string]: number } = {};
-
-    // Initialize last 30 days with 0
-    for (let i = 0; i < 30; i++) {
-        const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
-        const day = date.getDate();
-        const month = date.toLocaleString('default', { month: 'short' });
-        const key = `${day} ${month}`;
-        graph[key] = 0;
-    }
-
-    // Sum up totals
-    for (const order of orders) {
-        const date = new Date(order.createdAt);
-        const day = date.getDate();
-        const month = date.toLocaleString('default', { month: 'short' });
-        const key = `${day} ${month}`;
-
-        // Handle timezone edges roughly by checking if key exists directly or nearby, 
-        // but for simple visual, direct match is okay. 
-        // Better: normalize to map key.
-
-        // Re-generate key mechanism that is sorted correctly
-    }
-
-    // Let's redo aggregation properly sorted
-    const grouped = new Map<string, number>();
+    const groupedRevenue = new Map<string, number>();
+    const groupedOrders = new Map<string, number>();
 
     // Fill map with dates in chronological order
     for (let i = 29; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
         const key = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }); // "14 Jan"
-        grouped.set(key, 0);
+        groupedRevenue.set(key, 0);
+        groupedOrders.set(key, 0);
     }
 
     orders.forEach(order => {
         const key = order.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-        if (grouped.has(key)) {
-            grouped.set(key, (grouped.get(key) || 0) + Number(order.total));
+        if (groupedRevenue.has(key)) {
+            groupedRevenue.set(key, (groupedRevenue.get(key) || 0) + Number(order.total));
+            groupedOrders.set(key, (groupedOrders.get(key) || 0) + 1);
         }
     });
 
-    const graphData = Array.from(grouped.entries()).map(([name, total]) => ({
-        name,
-        total
+    const graphData = Array.from(groupedRevenue.keys()).map((key) => ({
+        name: key,
+        total: groupedRevenue.get(key) || 0,
+        orders: groupedOrders.get(key) || 0
     }));
 
     return graphData;
@@ -125,6 +104,10 @@ export default async function AdminDashboard() {
                 <div className="bg-white p-6 border border-gray-100 shadow-sm">
                     <h3 className="text-lg font-medium mb-4">Revenue (Last 30 Days)</h3>
                     <Overview data={graphData} />
+                </div>
+                <div className="bg-white p-6 border border-gray-100 shadow-sm">
+                    <h3 className="text-lg font-medium mb-4">Orders (Last 30 Days)</h3>
+                    <OrdersChart data={graphData} />
                 </div>
             </div>
         </div>
