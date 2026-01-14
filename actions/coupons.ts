@@ -90,6 +90,30 @@ export async function createCoupon(formData: FormData) {
     redirect("/admin/coupons");
 }
 
+export async function updateCoupon(id: string, formData: FormData) {
+    const code = formData.get("code") as string;
+    const discountType = formData.get("discountType") as string;
+    const discountValue = formData.get("discountValue") as string;
+    const minOrderValue = formData.get("minOrderValue") as string;
+    const maxUses = formData.get("maxUses") as string;
+    const expiresAt = formData.get("expiresAt") as string;
+
+    await prisma.coupon.update({
+        where: { id },
+        data: {
+            code,
+            discountType,
+            discountValue: Number(discountValue),
+            minOrderValue: minOrderValue ? Number(minOrderValue) : null,
+            maxUses: maxUses ? Number(maxUses) : null,
+            expiresAt: expiresAt ? new Date(expiresAt) : null,
+        }
+    });
+
+    revalidatePath("/admin/coupons");
+    redirect("/admin/coupons");
+}
+
 export async function deleteCoupon(id: string) {
     await prisma.coupon.delete({ where: { id } });
     revalidatePath("/admin/coupons");
