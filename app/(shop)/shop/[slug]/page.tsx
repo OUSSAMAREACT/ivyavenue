@@ -149,7 +149,7 @@ async function ProductDetails({ slug }: { slug: string }) {
             {/* Reviews Section */}
             <div className="col-span-full mt-24 max-w-4xl mx-auto w-full">
                 <h2 className="text-3xl font-serif text-center mb-12">Customer Reviews</h2>
-                <ProductReviews reviews={product.reviews} productName={product.name} />
+                <ProductReviews reviews={product.reviews} productName={product.name} productId={product.id} />
             </div>
 
             {/* Related Products */}
