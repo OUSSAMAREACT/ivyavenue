@@ -5,63 +5,78 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
+import { PaginationControls } from "@/components/admin/pagination";
 
 /**
  * AdminProductTable Component
  * Fetches and displays the inventory table.
  */
-async function AdminProductTable() {
-    await connection(); // Use dynamic data sources
-    const products = await prisma.product.findMany({
-        orderBy: { createdAt: 'desc' },
-        include: { category: true }
-    });
+async function AdminProductTable({ page = 1 }: { page: number }) {
+    await connection();
+    const pageSize = 10;
+    const skip = (page - 1) * pageSize;
+
+    const [products, totalCount] = await Promise.all([
+        prisma.product.findMany({
+            orderBy: { createdAt: 'desc' },
+            include: { category: true },
+            take: pageSize,
+            skip: skip
+        }),
+        prisma.product.count()
+    ]);
 
     return (
-        <div className="bg-white border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600 min-w-[800px]">
-                <thead className="bg-gray-50 text-gray-900 font-medium">
-                    <tr>
-                        <th className="px-6 py-4">Name</th>
-                        <th className="px-6 py-4">SKU/Slug</th>
-                        <th className="px-6 py-4">Category</th>
-                        <th className="px-6 py-4 text-right">Price</th>
-                        <th className="px-6 py-4 text-right">Stock</th>
-                        <th className="px-6 py-4 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                    {products.length === 0 ? (
-                        <tr><td colSpan={6} className="p-8 text-center text-gray-500">No products found.</td></tr>
-                    ) : (
-                        products.map((product: any) => (
-                            <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4 font-medium text-gray-900">{product.name}</td>
-                                <td className="px-6 py-4 font-mono text-xs">{product.slug}</td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                        {product.category?.name || "Uncategorized"}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 text-right">{formatCurrency(Number(product.price))}</td>
-                                <td className="px-6 py-4 text-right">{product.stock}</td>
-                                <td className="px-6 py-4 text-center">
-                                    <Link href={`/admin/products/${product.id}`}>
-                                        <Button variant="outline" size="sm" className="h-8 border-gray-200">
-                                            Edit
-                                        </Button>
-                                    </Link>
-                                </td>
-                            </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
+        <div className="space-y-4">
+            <div className="bg-white border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
+                <table className="w-full text-left text-sm text-gray-600 min-w-[800px]">
+                    <thead className="bg-gray-50 text-gray-900 font-medium">
+                        <tr>
+                            <th className="px-6 py-4">Name</th>
+                            <th className="px-6 py-4">SKU/Slug</th>
+                            <th className="px-6 py-4">Category</th>
+                            <th className="px-6 py-4 text-right">Price</th>
+                            <th className="px-6 py-4 text-right">Stock</th>
+                            <th className="px-6 py-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                        {products.length === 0 ? (
+                            <tr><td colSpan={6} className="p-8 text-center text-gray-500">No products found.</td></tr>
+                        ) : (
+                            products.map((product: any) => (
+                                <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-6 py-4 font-medium text-gray-900">{product.name}</td>
+                                    <td className="px-6 py-4 font-mono text-xs">{product.slug}</td>
+                                    <td className="px-6 py-4">
+                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            {product.category?.name || "Uncategorized"}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">{formatCurrency(Number(product.price))}</td>
+                                    <td className="px-6 py-4 text-right">{product.stock}</td>
+                                    <td className="px-6 py-4 text-center">
+                                        <Link href={`/admin/products/${product.id}`}>
+                                            <Button variant="outline" size="sm" className="h-8 border-gray-200">
+                                                Edit
+                                            </Button>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            <PaginationControls totalItems={totalCount} pageSize={pageSize} currentPage={page} />
         </div>
     );
 }
 
-export default function AdminProductsPage() {
+export default async function AdminProductsPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+    const params = await searchParams;
+    const page = Number(params.page) || 1;
+
     return (
         <div>
             <div className="flex justify-between items-center mb-8">
@@ -74,7 +89,7 @@ export default function AdminProductsPage() {
             </div>
 
             <Suspense fallback={<div className="p-8 text-center text-gray-500">Loading inventory...</div>}>
-                <AdminProductTable />
+                <AdminProductTable page={page} />
             </Suspense>
         </div>
     );
