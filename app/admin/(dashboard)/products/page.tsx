@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { PaginationControls } from "@/components/admin/pagination";
+import { DeleteProductButton } from "@/components/admin/delete-product-button";
 
 /**
  * AdminProductTable Component
@@ -56,11 +57,14 @@ async function AdminProductTable({ page = 1 }: { page: number }) {
                                     <td className="px-6 py-4 text-right">{formatCurrency(Number(product.price))}</td>
                                     <td className="px-6 py-4 text-right">{product.stock}</td>
                                     <td className="px-6 py-4 text-center">
-                                        <Link href={`/admin/products/${product.id}`}>
-                                            <Button variant="outline" size="sm" className="h-8 border-gray-200">
-                                                Edit
-                                            </Button>
-                                        </Link>
+                                        <div className="flex gap-2 justify-center">
+                                            <Link href={`/admin/products/${product.id}`}>
+                                                <Button variant="outline" size="sm" className="h-8 border-gray-200">
+                                                    Edit
+                                                </Button>
+                                            </Link>
+                                            <DeleteProductButton id={product.id} />
+                                        </div>
                                     </td>
                                 </tr>
                             ))

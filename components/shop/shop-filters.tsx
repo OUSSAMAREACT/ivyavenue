@@ -237,6 +237,12 @@ export function ShopFilters() {
                                         ]}
                                         max={200}
                                         step={5}
+                                        onValueChange={(value) => {
+                                            // Optional: Local state update for smooth sliding UI if we had a dedicated state
+                                            // For now, Shadcn Slider handles visual thumb position internally.
+                                            // But the text update below needs state or we just read from URL which is slow.
+                                            // Let's rely on the internal slider UI for position, but text won't update until commit without state.
+                                        }}
                                         onValueCommit={(value) => {
                                             const params = new URLSearchParams(searchParams.toString());
                                             params.set("minPrice", value[0].toString());
