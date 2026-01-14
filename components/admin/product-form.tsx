@@ -58,7 +58,7 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                 </div>
 
                 <div className="space-y-4">
-                    <label className="block text-sm font-medium">Price ($)</label>
+                    <label className="block text-sm font-medium">Price (£)</label>
                     <input name="price" type="number" step="0.01" defaultValue={Number(initialData?.price)} className="w-full p-2 border border-gray-200 focus:outline-none focus:border-black" required />
                 </div>
 

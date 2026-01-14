@@ -80,7 +80,7 @@ export async function createPaymentIntent(items: { id: string; quantity: number 
         // 3. Create Stripe PaymentIntent
         const paymentIntent = await stripe.paymentIntents.create({
             amount: finalAmount > 50 ? finalAmount : 50, // Minimum charge requirements
-            currency: "usd",
+            currency: "gbp",
             automatic_payment_methods: { enabled: true },
             metadata: {
                 shipping_details: JSON.stringify(shippingDetails),
