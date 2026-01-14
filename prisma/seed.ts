@@ -12,12 +12,17 @@ async function main() {
     console.log('Seeding database...')
 
     // Clean up existing data
+    // Clean up existing data
+    await prisma.cartItem.deleteMany()
+    await prisma.cart.deleteMany()
+    await prisma.wishlist.deleteMany()
     await prisma.orderItem.deleteMany()
     await prisma.order.deleteMany()
     await prisma.review.deleteMany()
     await prisma.image.deleteMany()
     await prisma.product.deleteMany()
     await prisma.category.deleteMany()
+    await prisma.user.deleteMany()
 
     // Create Categories
     const categoryStems = await prisma.category.create({
