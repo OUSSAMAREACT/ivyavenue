@@ -43,11 +43,9 @@ export async function POST(req: NextRequest) {
 
     try {
         switch (event.type) {
-            case "checkout.session.completed":
-                const session = event.data.object as Stripe.Checkout.Session;
-
-                // Ensure we have the order ID from metadata
-                const orderId = session.metadata?.orderId;
+            case "payment_intent.succeeded":
+                const paymentIntent = event.data.object as Stripe.PaymentIntent;
+                const orderId = paymentIntent.metadata?.orderId;
 
                 if (orderId) {
                     console.log(`✅ Payment successful for Order ${orderId}`);
@@ -72,6 +70,51 @@ export async function POST(req: NextRequest) {
                         }
                     });
 
+                    // Send Order Confirmation Email
+                    try {
+                        const { sendOrderConfirmationEmail } = await import("@/lib/email");
+                        // For PaymentIntent, email is in receipt_email or metadata
+                        const customerEmail = paymentIntent.receipt_email || paymentIntent.metadata?.email;
+                        // Use metadata for name as it's not always in PI
+                        const customerName = paymentIntent.metadata?.name || "Customer";
+                        const amountTotal = paymentIntent.amount;
+
+                        if (customerEmail) {
+                            await sendOrderConfirmationEmail(customerEmail, orderId, customerName, amountTotal);
+                        }
+                    } catch (emailError) {
+                        console.error("Failed to send confirmation email:", emailError);
+                    }
+                }
+                break;
+
+            case "checkout.session.completed":
+                // Legacy or if we use Hosted Checkout later
+                const session = event.data.object as Stripe.Checkout.Session;
+                const sessionOrderId = session.metadata?.orderId;
+
+                if (sessionOrderId) {
+                    console.log(`✅ Payment successful for Order ${sessionOrderId}`);
+
+                    // Use a transaction to ensure order status and stock updates are atomic
+                    await prisma.$transaction(async (tx: any) => {
+                        // 1. Update Order Status
+                        const order = await tx.order.update({
+                            where: { id: sessionOrderId },
+                            data: { status: "PAID" },
+                            include: { items: true },
+                        });
+
+                        // 2. Decrement Stock for each item
+                        for (const item of order.items) {
+                            await tx.product.update({
+                                where: { id: item.productId },
+                                data: {
+                                    stock: { decrement: item.quantity },
+                                },
+                            });
+                        }
+                    });
 
                     // Send Order Confirmation Email
                     // Dynamic import to avoid circular dep issues if any, handling env logic inside lib
@@ -81,7 +124,7 @@ export async function POST(req: NextRequest) {
                     const amountTotal = session.amount_total || 0;
 
                     if (customerEmail) {
-                        await sendOrderConfirmationEmail(customerEmail, orderId, customerName, amountTotal);
+                        await sendOrderConfirmationEmail(customerEmail, sessionOrderId, customerName, amountTotal);
                     }
                 }
                 break;
