@@ -9,7 +9,7 @@ import { ShopFilters } from "@/components/shop/shop-filters";
  * ProductGrid Component
  * Fetches and displays the product list.
  */
-async function ProductGrid({ searchParams }: { searchParams: { category?: string } }) {
+async function ProductGrid({ searchParams }: { searchParams: { category?: string, sort?: string, minPrice?: string, maxPrice?: string } }) {
     await connection(); // Opt-in to dynamic rendering
 
     // Build where clause
@@ -20,9 +20,23 @@ async function ProductGrid({ searchParams }: { searchParams: { category?: string
         };
     }
 
+    // Price Range Logic
+    // We expect params like ?minPrice=10&maxPrice=50
+    const minPrice = searchParams.minPrice ? Number(searchParams.minPrice) : undefined;
+    const maxPrice = searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined;
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+        where.price = {};
+        if (minPrice !== undefined) where.price.gte = minPrice;
+        if (maxPrice !== undefined) where.price.lte = maxPrice;
+    }
+
     const products = await prisma.product.findMany({
         where,
-        include: { images: true, category: true }
+        include: { images: true, category: true },
+        orderBy: searchParams.sort === 'price_asc' ? { price: 'asc' } :
+            searchParams.sort === 'price_desc' ? { price: 'desc' } :
+                { createdAt: 'desc' }
     });
 
     return (
@@ -58,7 +72,7 @@ export const metadata = {
     description: "Explore our range of meticulously crafted faux stems, arranged for timeless elegance.",
 };
 
-export default async function ShopPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+export default async function ShopPage({ searchParams }: { searchParams: Promise<{ category?: string, sort?: string, minPrice?: string, maxPrice?: string }> }) {
     const params = await searchParams; // Next.js 15+ async searchParams
 
     return (

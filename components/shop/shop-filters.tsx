@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Slider } from "@/components/ui/slider";
 
 export function ShopFilters() {
     const [isOpen, setIsOpen] = useState(false);
@@ -204,6 +205,99 @@ export function ShopFilters() {
                                         {activeColor === color.slug && color.slug === 'white' && <Check className="w-4 h-4 text-black" />}
                                         {activeColor === color.slug && color.slug !== 'white' && <Check className="w-4 h-4 text-white" />}
                                     </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Price Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={(e) => toggleDropdown(e, 'price')}
+                            className={cn(
+                                "flex items-center gap-2 text-sm uppercase tracking-wider hover:text-black transition-colors",
+                                (searchParams.get("minPrice") || searchParams.get("maxPrice")) ? "text-black font-medium" : "text-gray-600"
+                            )}
+                        >
+                            Price
+                            {(searchParams.get("minPrice") || searchParams.get("maxPrice")) && <span className="bg-black text-white text-[10px] px-1.5 rounded-full">1</span>}
+                            <ChevronDown className={cn("w-3 h-3 transition-transform", activeDropdown === 'price' && "rotate-180")} />
+                        </button>
+                        {activeDropdown === 'price' && (
+                            <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute top-full left-0 mt-4 bg-white border border-gray-100 shadow-xl p-6 min-w-[280px] rounded-lg animate-in fade-in slide-in-from-top-2 z-50"
+                            >
+                                <div className="space-y-6">
+                                    <h4 className="font-medium text-sm">Price Range</h4>
+                                    <Slider
+                                        defaultValue={[
+                                            Number(searchParams.get("minPrice") || 0),
+                                            Number(searchParams.get("maxPrice") || 200)
+                                        ]}
+                                        max={200}
+                                        step={5}
+                                        onValueCommit={(value) => {
+                                            const params = new URLSearchParams(searchParams.toString());
+                                            params.set("minPrice", value[0].toString());
+                                            params.set("maxPrice", value[1].toString());
+                                            router.push(`/shop?${params.toString()}`, { scroll: false });
+                                        }}
+                                    />
+                                    <div className="flex justify-between text-sm text-gray-500">
+                                        <span>£{searchParams.get("minPrice") || 0}</span>
+                                        <span>£{searchParams.get("maxPrice") || 200}</span>
+                                    </div>
+                                    <div className="flex justify-end pt-2">
+                                        <button
+                                            onClick={(e) => {
+                                                toggleDropdown(e, 'price');
+                                            }}
+                                            className="text-xs text-black underline"
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Sort Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={(e) => toggleDropdown(e, 'sort')}
+                            className={cn(
+                                "flex items-center gap-2 text-sm uppercase tracking-wider hover:text-black transition-colors",
+                                searchParams.get("sort") ? "text-black font-medium" : "text-gray-600"
+                            )}
+                        >
+                            Sort By
+                            <ChevronDown className={cn("w-3 h-3 transition-transform", activeDropdown === 'sort' && "rotate-180")} />
+                        </button>
+                        {activeDropdown === 'sort' && (
+                            <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute top-full left-0 mt-4 bg-white border border-gray-100 shadow-xl p-2 min-w-[180px] rounded-lg animate-in fade-in slide-in-from-top-2 flex flex-col z-50"
+                            >
+                                {[
+                                    { label: "Newest", value: "newest" },
+                                    { label: "Price: Low to High", value: "price_asc" },
+                                    { label: "Price: High to Low", value: "price_desc" }
+                                ].map((option) => (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => {
+                                            updateFilter("sort", option.value);
+                                            setActiveDropdown(null);
+                                        }}
+                                        className={cn(
+                                            "text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors rounded",
+                                            searchParams.get("sort") === option.value ? "font-medium text-black bg-gray-50" : "text-gray-600"
+                                        )}
+                                    >
+                                        {option.label}
+                                    </button>
                                 ))}
                             </div>
                         )}

@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -74,7 +75,7 @@ export default async function AccountPage() {
                                             </div>
 
                                             <div className="text-right">
-                                                <p className="font-medium">${Number(order.total).toFixed(2)}</p>
+                                                <p className="font-medium">{formatCurrency(Number(order.total))}</p>
                                                 <span className={`inline-block px-2 py-1 text-xs mt-1 rounded-full ${order.status === 'PAID' ? 'bg-green-100 text-green-800' :
                                                     order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
                                                         order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-800' :
@@ -97,7 +98,7 @@ export default async function AccountPage() {
                                             {order.items.map((item: any) => (
                                                 <div key={item.id} className="flex justify-between text-sm text-gray-600">
                                                     <span>{item.product.name} x {item.quantity}</span>
-                                                    <span>${Number(item.price).toFixed(2)}</span>
+                                                    <span>{formatCurrency(Number(item.price))}</span>
                                                 </div>
                                             ))}
                                         </div>

@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
 
 /**
  * AdminProductTable Component
@@ -17,8 +18,8 @@ async function AdminProductTable() {
     });
 
     return (
-        <div className="bg-white border border-gray-100 shadow-sm overflow-hidden">
-            <table className="w-full text-left text-sm text-gray-600">
+        <div className="bg-white border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-600 min-w-[800px]">
                 <thead className="bg-gray-50 text-gray-900 font-medium">
                     <tr>
                         <th className="px-6 py-4">Name</th>
@@ -42,7 +43,7 @@ async function AdminProductTable() {
                                         {product.category?.name || "Uncategorized"}
                                     </span>
                                 </td>
-                                <td className="px-6 py-4 text-right">${Number(product.price).toFixed(2)}</td>
+                                <td className="px-6 py-4 text-right">{formatCurrency(Number(product.price))}</td>
                                 <td className="px-6 py-4 text-right">{product.stock}</td>
                                 <td className="px-6 py-4 text-center">
                                     <Link href={`/admin/products/${product.id}`}>
