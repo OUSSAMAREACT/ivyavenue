@@ -8,6 +8,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { X, Upload } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface ProductFormProps {
     initialData?: any;
@@ -68,13 +76,38 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                 </div>
 
                 <div className="space-y-4">
-                    <label className="block text-sm font-medium">Category</label>
-                    <select name="categoryId" defaultValue={initialData?.categoryId} className="w-full p-2 border border-gray-200 focus:outline-none focus:border-black bg-white" required>
-                        <option value="">Select Category</option>
-                        {categories.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                    </select>
+                    <div>
+                        <Label>Category</Label>
+                        <Select name="categoryId" defaultValue={initialData?.categoryId}>
+                            <SelectTrigger className="w-full mt-2 rounded-none border-gray-200">
+                                <SelectValue placeholder="Select Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((cat) => (
+                                    <SelectItem key={cat.id} value={cat.id}>
+                                        {cat.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div>
+                        <Label>Color</Label>
+                        <Select name="color" defaultValue={initialData?.color || "white"}>
+                            <SelectTrigger className="w-full mt-2 rounded-none border-gray-200">
+                                <SelectValue placeholder="Select Color" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="white">White</SelectItem>
+                                <SelectItem value="black">Black</SelectItem>
+                                <SelectItem value="cream">Cream</SelectItem>
+                                <SelectItem value="blush">Blush</SelectItem>
+                                <SelectItem value="red">Red</SelectItem>
+                                <SelectItem value="green">Green</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
             </div>
 

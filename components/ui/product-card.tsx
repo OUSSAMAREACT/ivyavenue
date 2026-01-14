@@ -28,6 +28,7 @@ export function ProductCard({ id, name, slug, price, image }: ProductCardProps) 
             price,
             image,
             quantity: 1,
+            slug,
             maxStock: 99 // Default for now, ideally passed from prop
         });
 
