@@ -1,5 +1,6 @@
 {
   "name": "ivy-avenue",
+  "description": "Premium flower shop application",
   "version": "0.1.0",
   "private": true,
   "scripts": {
