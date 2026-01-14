@@ -4,10 +4,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { newPassword } from "@/actions/reset-password";
-import { useActionState, useState } from "react";
+import { useActionState, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
-export default function NewPasswordPage() {
+function NewPasswordForm() {
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
     const router = useRouter();
@@ -64,5 +64,13 @@ export default function NewPasswordPage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function NewPasswordPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <NewPasswordForm />
+        </Suspense>
     );
 }

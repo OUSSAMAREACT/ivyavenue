@@ -39,7 +39,81 @@ function StatCard({ label, value, icon }: { label: string, value: string, icon: 
     );
 }
 
-export default function AdminDashboard() {
+import { Overview } from "@/components/admin/overview";
+
+async function getGraphData() {
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const orders = await prisma.order.findMany({
+        where: {
+            createdAt: {
+                gte: thirtyDaysAgo
+            },
+            status: {
+                not: 'CANCELLED'
+            }
+        },
+        select: {
+            createdAt: true,
+            total: true
+        }
+    });
+
+    const graph: { [key: string]: number } = {};
+
+    // Initialize last 30 days with 0
+    for (let i = 0; i < 30; i++) {
+        const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'short' });
+        const key = `${day} ${month}`;
+        graph[key] = 0;
+    }
+
+    // Sum up totals
+    for (const order of orders) {
+        const date = new Date(order.createdAt);
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'short' });
+        const key = `${day} ${month}`;
+
+        // Handle timezone edges roughly by checking if key exists directly or nearby, 
+        // but for simple visual, direct match is okay. 
+        // Better: normalize to map key.
+
+        // Re-generate key mechanism that is sorted correctly
+    }
+
+    // Let's redo aggregation properly sorted
+    const grouped = new Map<string, number>();
+
+    // Fill map with dates in chronological order
+    for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const key = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }); // "14 Jan"
+        grouped.set(key, 0);
+    }
+
+    orders.forEach(order => {
+        const key = order.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+        if (grouped.has(key)) {
+            grouped.set(key, (grouped.get(key) || 0) + Number(order.total));
+        }
+    });
+
+    const graphData = Array.from(grouped.entries()).map(([name, total]) => ({
+        name,
+        total
+    }));
+
+    return graphData;
+}
+
+export default async function AdminDashboard() {
+    const graphData = await getGraphData();
+
     return (
         <div>
             <h1 className="text-3xl font-serif mb-8">Overview</h1>
@@ -47,11 +121,11 @@ export default function AdminDashboard() {
                 <DashboardStats />
             </Suspense>
 
-            <div className="bg-white p-8 border border-gray-100 shadow-sm text-center py-12">
-                <h3 className="text-xl font-medium mb-2">Welcome to Ivy Admin</h3>
-                <p className="text-gray-500 max-w-md mx-auto">
-                    Select an option from the sidebar to manage your store.
-                </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+                <div className="bg-white p-6 border border-gray-100 shadow-sm">
+                    <h3 className="text-lg font-medium mb-4">Revenue (Last 30 Days)</h3>
+                    <Overview data={graphData} />
+                </div>
             </div>
         </div>
     );

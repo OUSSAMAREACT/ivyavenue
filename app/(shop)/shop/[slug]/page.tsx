@@ -10,6 +10,43 @@ import { ProductCard } from "@/components/ui/product-card";
 import { AddToCart } from "@/components/shop/add-to-cart";
 import { ProductReviews } from "@/components/shop/product-reviews";
 
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+
+    // Fetch product for metadata (cached by Next.js request deduping)
+    const product = await prisma.product.findUnique({
+        where: { slug },
+        include: { images: true }
+    });
+
+    if (!product) {
+        return {
+            title: "Product Not Found | Ivy Avenue",
+            description: "The requested product could not be found."
+        };
+    }
+
+    return {
+        title: product.name,
+        description: product.description.substring(0, 160),
+        openGraph: {
+            title: product.name,
+            description: product.description.substring(0, 160),
+            images: product.images.length > 0 ? [{ url: product.images[0].url }] : [],
+            url: `https://ivyavenue.fluxstudio.cloud/shop/${product.slug}`,
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: product.name,
+            description: product.description.substring(0, 160),
+            images: product.images.length > 0 ? [product.images[0].url] : [],
+        }
+    };
+}
+
 async function ProductDetails({ slug }: { slug: string }) {
     const product = await prisma.product.findUnique({
         where: { slug },
@@ -71,6 +108,27 @@ async function ProductDetails({ slug }: { slug: string }) {
                 <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed">
                     <p>{product.description}</p>
                 </div>
+
+                {/* JSON-LD Structured Data */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "Product",
+                            name: product.name,
+                            description: product.description,
+                            image: product.images[0]?.url || "",
+                            offers: {
+                                "@type": "Offer",
+                                priceCurrency: "GBP",
+                                price: Number(product.price),
+                                availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                                url: `https://ivyavenue.fluxstudio.cloud/shop/${product.slug}`,
+                            },
+                        }),
+                    }}
+                />
 
                 <div className="pt-6 border-t border-gray-100 space-y-4">
                     <AddToCart
