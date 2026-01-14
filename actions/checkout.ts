@@ -3,7 +3,44 @@
 import prisma from "@/lib/prisma";
 import Stripe from "stripe";
 
-export async function createPaymentIntent(items: { id: string; quantity: number }[], shippingDetails: any, couponCode?: string) {
+import { checkoutSchema } from "@/lib/schemas";
+
+export async function createPaymentIntent(prevState: any, formData: FormData) {
+    // Parse raw data
+    const rawData = {
+        email: formData.get("email"),
+        firstName: formData.get("firstName"),
+        lastName: formData.get("lastName"),
+        address: formData.get("address"),
+        city: formData.get("city"),
+        postalCode: formData.get("postalCode"),
+        country: formData.get("country"),
+        items: JSON.parse(formData.get("items") as string || "[]"),
+        couponCode: formData.get("couponCode") as string || undefined, // Extract coupon code from formData
+    };
+
+    // Validate using Zod
+    const validatedFields = checkoutSchema.safeParse(rawData);
+
+    if (!validatedFields.success) {
+        return {
+            error: validatedFields.error.flatten().fieldErrors,
+            message: "Please fix the errors below."
+        };
+    }
+
+    const { email, firstName, lastName, address, city, postalCode, country, items, couponCode } = validatedFields.data;
+
+    const shippingDetails = {
+        email,
+        firstName,
+        lastName,
+        address,
+        city,
+        postalCode,
+        country,
+    };
+
     try {
         // 1. Fetch Settings to get Stripe Secret Key
         const settings = await prisma.storeSettings.findUnique({

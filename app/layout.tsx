@@ -2,15 +2,8 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ivyavenue.fluxstudio.cloud"),
@@ -47,6 +40,7 @@ export const metadata: Metadata = {
 
 import { CartSync } from "@/components/cart-sync";
 import { Toaster } from "sonner";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 
 export default function RootLayout({
   children,
@@ -54,10 +48,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable} scroll-smooth`} suppressHydrationWarning>
-      <body
-        className="antialiased bg-white text-black font-sans selection:bg-black selection:text-white"
-      >
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased text-black bg-white selection:bg-black selection:text-white`}>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || ""} />
         <CartSync />
         {children}
         <Toaster />
