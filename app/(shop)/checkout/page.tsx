@@ -149,11 +149,20 @@ export default function CheckoutPage() {
 
         setError("");
 
-        const res = await createPaymentIntent(
-            items.map(i => ({ id: i.id, quantity: i.quantity })),
-            shippingDetails,
-            appliedDiscount > 0 ? couponCode : undefined
-        );
+        const formData = new FormData();
+        formData.append("email", shippingDetails.email);
+        formData.append("firstName", shippingDetails.firstName);
+        formData.append("lastName", shippingDetails.lastName);
+        formData.append("address", shippingDetails.address);
+        formData.append("city", shippingDetails.city);
+        formData.append("postalCode", shippingDetails.postalCode);
+        formData.append("country", shippingDetails.country);
+        formData.append("items", JSON.stringify(items.map(i => ({ id: i.id, quantity: i.quantity }))));
+        if (appliedDiscount > 0 && couponCode) {
+            formData.append("couponCode", couponCode);
+        }
+
+        const res = await createPaymentIntent(null, formData);
 
         if (res.error) {
             setError(res.error);

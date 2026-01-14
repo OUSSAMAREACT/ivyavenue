@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { Button } from "./button";
-import { AddToCart } from "@/components/shop/add-to-cart";
+import { useCartStore } from "@/lib/store/cart";
+import { toast } from "sonner";
 
 interface ProductCardProps {
     id: string;
@@ -12,7 +15,25 @@ interface ProductCardProps {
     image: string;
 }
 
-export function ProductCard({ name, slug, price, image }: ProductCardProps) {
+export function ProductCard({ id, name, slug, price, image }: ProductCardProps) {
+    const addToCart = useCartStore((state) => state.addItem);
+
+    const handleQuickAdd = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        addToCart({
+            id,
+            name,
+            price,
+            image,
+            quantity: 1,
+            maxStock: 99 // Default for now, ideally passed from prop
+        });
+
+        toast.success("Added to cart");
+    };
+
     return (
         <div className="group relative">
             <Link href={`/shop/${slug}`} className="block">
@@ -26,13 +47,12 @@ export function ProductCard({ name, slug, price, image }: ProductCardProps) {
                     />
                     <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/5" />
 
-                    {/* Quick Add Button - Prevent Link click propagation if needed, or keep as part of link but separate button action */}
+                    {/* Quick Add Button */}
                     <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 z-10">
-                        {/* We use a span or div here to avoid nesting button inside link warning if using standard HTML, but Next Link accepts it. 
-                            However, better to keep "Quick Add" separate if it opens a modal. 
-                            If Quick Add navigates, it's fine. If it adds to cart, we need e.preventDefault(). 
-                        */}
-                        <Button className="w-full bg-white text-black hover:bg-black hover:text-white shadow-lg border border-transparent hover:border-black font-medium tracking-wide">
+                        <Button
+                            onClick={handleQuickAdd}
+                            className="w-full bg-white text-black hover:bg-black hover:text-white shadow-lg border border-transparent hover:border-black font-medium tracking-wide"
+                        >
                             Quick Add
                         </Button>
                     </div>
